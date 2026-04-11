@@ -1,0 +1,67 @@
+{
+    "{SERVER IP}": {
+        "patterns": {
+            "{PATTERN NAME}": {"dir": "EAST", "anglesig": "w"}
+        },
+        "config": {
+            "max_part": 1024,
+            "part_size": 254,
+            "part_delay": 2,
+            "batch_size": 1,
+            "return_delay": 12
+        },
+        "endpoint": "Moreiotas"
+    },
+
+    "SERVER_DEFAULT": {
+        "patterns": {
+        },
+        "config": {
+            "max_part": 1024,
+            "part_size": 1,
+            "part_delay": 2,
+            "batch_size": 3,
+            "return_delay": 12
+        },
+        "endpoint": "Mediatransport"
+    },
+    "SINGLEPLAYER_DEFAULT": {
+        "patterns": {
+        },
+        "config": {
+            "max_part": 1024,
+            "part_size": 254,
+            "part_delay": 2,
+            "batch_size": 1,
+            "return_delay": 12
+        },
+        "endpoint": "Moreiotas"
+    },
+
+    "Moreiotas Example": {
+        "patterns": {
+        },
+        "config": {
+            "max_part": 1024,
+            "part_size": 254,
+            "part_delay": 2,
+            "batch_size": 1,
+            "return_delay": 12
+        },
+        "endpoint": "Moreiotas",
+        "comment": "The moreiotas endpoint uses part_size as amount of characters. That means that, aside from the sifters gambit prefix at the start, you normally have 254 characters to work with"
+    },
+    "Mediatransport Example": {
+        "patterns": {
+        },
+        "config": {
+            "max_part": 1024,
+            "part_size": 1,
+            "part_delay": 2,
+            "batch_size": 3,
+            "return_delay": 12
+        },
+        "endpoint": "Mediatransport",
+        "comment": "Mediatransport uses part_size as amount of patterns. The default configuration of media transport does not allow lists to be sent through, so you can only send singular patterns, or other singular iotas. Of another note, it implements a 6 iota long queue, which means that we can send multiple iotas per batch. The example is set to 3 to reduce information loss due to lag."
+    }
+}

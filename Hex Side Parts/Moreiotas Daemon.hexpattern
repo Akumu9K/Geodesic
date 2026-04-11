@@ -1,0 +1,267 @@
+// To be used with: Hexical, hexcasettes and moreiotas
+// This hex has a method to cast any spell it imports through the telepathy function of hexical, feel free to ignore or excise it.
+
+{
+    {
+        Bookkeeper's Gambit: -
+    }
+    Flock's Disintegration
+    Numerical Reflection: 1
+    Prospector's Gambit
+    Surgeon's Exaltation
+    {
+        Bookkeeper's Gambit: -
+    }
+    Flock's Disintegration
+    Huginn's Gambit
+    //
+    Whisper Reflection
+    Muninn's Reflection
+    Numerical Reflection: 3
+    Selection Distillation
+    Equality Distillation
+    Negation Purification
+    // The whisper reflection result cannot be null, so check for that
+    Whisper Reflection
+    Nullary Reflection
+    Equality Distillation
+    Negation Purification
+    Conjunction Distillation
+    //
+    {
+        // Moreiotas importer start
+        Muninn's Reflection
+        //
+        Whisper Reflection
+        // Assume string iota at the start
+        Single's Purification
+        {
+            // Stack Cleanup
+            Flock's Reflection
+            Numerical Reflection: -1
+            Multiplicative Distillation
+            Numerical Reflection: 1
+            Additive Distillation
+            Fisherman's Gambit
+            // Push input iota down ^
+            Flock's Reflection
+            Numerical Reflection: -1
+            Additive Distillation
+            Flock's Gambit
+            Bookkeeper's Gambit: v
+            // End of stack cleanup
+
+            Spacing Reflection
+            Separation Distillation
+            {
+                Blank Reflection
+                Separation Distillation
+                Derivation Decomposition
+                Bookkeeper's Gambit: v
+                Speaker's Decomposition
+                Bookkeeper's Gambit: v
+                //
+                Speaker's Decomposition
+                Input Purification
+                Gemini Decomposition
+                Numerical Reflection: 2
+                Flock's Gambit
+                //
+                Huginn's Gambit
+                {
+                    Muninn's Reflection
+                    Numerical Reflection: 0
+                    Selection Distillation
+                    Jester's Gambit
+                    {
+                        Bookkeeper's Gambit: - <String: "wedsaq">
+                    }
+                    Flock's Disintegration
+                    Blank Reflection
+                    Separation Distillation
+                    Derivation Decomposition
+                    Bookkeeper's Gambit: v
+                    Speaker's Decomposition
+                    Bookkeeper's Gambit: v
+                    Jester's Gambit
+                    Locator's Distillation
+                    Additive Distillation
+                    Gemini Decomposition
+                    //
+                    Muninn's Reflection
+                    Jester's Gambit
+                    Numerical Reflection: 0
+                    Jester's Gambit
+                    Surgeon's Exaltation
+                    //
+                    Huginn's Gambit
+                }
+                Jester's Gambit
+                Thoth's Gambit
+                //
+                Muninn's Reflection
+                Numerical Reflection: 1
+                Selection Distillation
+                Speaker's Distillation
+                //
+                Calligrapher's Purification // 81
+            }
+            Jester's Gambit
+            Thoth's Gambit
+        }
+        Jester's Gambit
+        Thoth's Gambit
+        Flock's Disintegration
+        //
+        Jester's Gambit
+        Huginn's Gambit
+        // End
+        Muninn's Reflection // Resets the clock, adds the new thing onto it
+        Numerical Reflection: 0
+        Selection Distillation
+        Jester's Gambit
+        Additive Distillation
+        Muninn's Reflection
+        Jester's Gambit
+        Numerical Reflection: 0
+        Jester's Gambit
+        Surgeon's Exaltation
+        //
+        Numerical Reflection: 1
+        Numerical Reflection: 0
+        Surgeon's Exaltation
+        //
+        Numerical Reflection: 2
+        True Reflection
+        Surgeon's Exaltation // Turns the clock state on
+        //
+        Numerical Reflection: 3
+        Whisper Reflection
+        Surgeon's Exaltation
+        //
+        Huginn's Gambit
+    }
+    {
+        Muninn's Reflection
+        Numerical Reflection: 2
+        Selection Distillation
+        { // Clock increment
+            Muninn's Reflection
+            Numerical Reflection: 1
+            Selection Distillation
+            Numerical Reflection: 1
+            Additive Distillation
+            Muninn's Reflection
+            Jester's Gambit
+            Numerical Reflection: 1
+            Jester's Gambit
+            Surgeon's Exaltation
+            Huginn's Gambit
+        }
+        {
+            
+        }
+        Augur's Exaltation
+        Hermes' Gambit
+    }
+    Augur's Exaltation
+    Hermes' Gambit
+    Muninn's Reflection
+    Numerical Reflection: 1
+    Selection Distillation
+    Numerical Reflection: 12 // Delay before it gets sent
+    Maximus Distillation
+    {
+        Numerical Reflection: 8
+        {
+            
+        }
+        Vacant Reflection
+        Integration Distillation
+        Numerical Reflection: 0
+        Integration Distillation
+        False Reflection
+        Integration Distillation
+        //
+        Whisper Reflection
+        Integration Distillation
+        //
+        Surgeon's Exaltation
+        Numerical Reflection: 1
+        Numerical Reflection: 6
+        Reading Purification (text)
+        Enqueue
+        // 
+        Muninn's Reflection
+        Numerical Reflection: 0
+        Selection Distillation
+        Gemini Decomposition
+        Length Purification
+        Reveal
+        Bookkeeper's Gambit: v
+        {
+            Bookkeeper's Gambit: - <Property Iota>
+        }
+        Flock's Disintegration
+        Jester's Gambit
+        Schrödinger's Gambit
+    }
+    {
+        Numerical Reflection: 8
+        Muninn's Reflection
+        Surgeon's Exaltation
+        Numerical Reflection: 1
+        Numerical Reflection: 6
+        Reading Purification (text)
+        Enqueue
+    }
+    Augur's Exaltation
+    Hermes' Gambit
+    // Execute imported hex with telepathy function here:
+    Numerical Reflection: -1
+    Telepathic Reflection
+    Inequality Distillation
+    Numerical Reflection: 1
+    Telepathic Reflection
+    Equality Distillation
+    Conjunction Distillation
+    {
+        //Hallucinate Click
+        {
+            Bookkeeper's Gambit: - <Property Iota>
+        }
+        Flock's Disintegration
+        Observation Purification
+        Hermes' Gambit
+    }
+    {
+       
+    }
+    Augur's Exaltation
+    Hermes' Gambit
+}
+//
+Numerical Reflection: 1
+Prospector's Gambit
+Surgeon's Exaltation
+Numerical Reflection: 8
+{
+    
+}
+Vacant Reflection
+Integration Distillation
+Numerical Reflection: 0
+Integration Distillation
+False Reflection
+Integration Distillation
+//
+Whisper Reflection
+Integration Distillation
+//
+Surgeon's Exaltation
+// 
+Numerical Reflection: 1
+Numerical Reflection: 6
+Reading Purification (text)
+//
+Enqueue
