@@ -112,12 +112,12 @@ end
 
 -- Init:
 
-if host:isHost() then
-function events.entity_init()
-
 file_system = action_wheel:newPage()
 Hex_repository = nil -- The name of the folder in figura/data which contains .hexpattern files to be imported
 file_system_location = nil -- Action wheel page variable, where the geodesic page, and also the page for auxillaries, gets created
+
+if host:isHost() then
+function events.entity_init()
 
 geodesic_filemap_goto_action = file_system_location:newAction()
     :title("Project: Geodesic")
