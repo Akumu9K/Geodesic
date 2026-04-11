@@ -128,7 +128,7 @@ local filegeturl = "https://raw.githubusercontent.com/{USER}/{REPO}/main/"
 -- Init:
 
 local github_start_page = action_wheel:newPage()
-local github_location = hex_tab
+local github_location = file_system_location
 
 local github_interop_goto = github_location:newAction()
     :title("Geodesic: Github")

@@ -152,7 +152,7 @@ end
 -- Init:
 
 local hexparty_start_page = action_wheel:newPage()
-local hexparty_location = hex_tab
+local hexparty_location = file_system_location
 
 local hexparty_interop_goto = hexparty_location:newAction()
     :title("Geodesic: Hexparty")
