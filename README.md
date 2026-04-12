@@ -127,7 +127,7 @@ Of note is a few things. Both of the auxilliaries use 2 functions defined in hex
 
 As these auxilliaries both use the internet, sometimes they receive a bad response, or no response at all. When this happens, the script prints "Traversal Failed" into the chat, which could either mean that the response didnt come fast enough, or that there was an error. After this, you can simply try again.
 
-If this keeps happening, check the figura networking settings, and if they are good, make the pcall() for the requests print its error message. Additionally, in request(), there is a local variable called wait_cycles, currently set to 3000000. This is the amount of times that while loop runs, and it roughly corresponds to around 2 seconds. Change this if needed.
+If this keeps happening, check the figura networking settings, and if they are good, make the pcall() for the requests print its error message. Additionally, in request(), there is a local variable named limit, on line 24. This should roughly correspond to the miliseconds that the loop should run for, but there is a hard coded delimiter to ensure that it doesnt run forever. Change this if needed.
 
 ### Custom Patterns:
 

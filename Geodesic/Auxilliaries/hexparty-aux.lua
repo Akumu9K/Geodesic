@@ -20,14 +20,16 @@ function request(uri,method,headers,body)
     request:body(body)
     local response = request:send()
 
-    local count = 0
-    local wait = true
-    local wait_cycles = 3000000
-    while (wait and (count < wait_cycles)) do
-        count = count + 1
+    local start_time = client.getSystemTime()
+    local limit = 1000 -- In miliseconds
+    local delimiter = 4000000 -- Just a fallback now
+    for i = 1, delimiter, 1 do
         if response:isDone() == true then
-            wait = false
             response = response:getValue()
+            break
+        end
+        if (client.getSystemTime() - start_time) > limit then
+            break
         end
     end
 
