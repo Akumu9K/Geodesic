@@ -10,12 +10,12 @@ It has quite a few features, such as:
 - Function definition and unfolding upon importation
 - ...And more
 
-This importer is meant to work with the vscode addon for hexcasting, by [object-Object](https://github.com/object-Object), and its format .hexpattern\
+This importer is meant to work with the [vscode addon for hexcasting](https://marketplace.visualstudio.com/items?itemName=object-Object.hex-casting), by [object-Object](https://github.com/object-Object), and its format .hexpattern\
 (Sorry hexparse enjoyers)
 
 ## Disclaimer
 
-This project is a personal project of mine first, and something I am releasing to the world second. It has rather ugly sections, commented out parts, sometimes hard to read code, and is rather hard to configure and implement, it is absolutely not a plug and play thing, and I do not plan upon making it such anytime soon (Or ever. The amount of work and polish needed for that is quite overrunning my overall motivation for this project, but we'll see.)
+This project is a personal project of mine first, and something I am releasing to the world second. It has rather ugly sections, commented out parts, sometimes hard to read code, and is rather hard to configure and implement. It is absolutely not a plug and play thing, and I do not plan upon making it such anytime soon (Or ever. The amount of work and polish needed for that is quite overrunning my overall motivation for this project, but we'll see.)
 
 So expect bugs, and a decent bit of debugging and rewriting sections of code, if you plan on using this thing for a good while.
 
@@ -31,11 +31,11 @@ This setup guide assumes, 1. you have figura, and 2. you know how to use it and 
 
 First, set up the avatar.
 
-Of crucial note, is the fact that figura by default executes any lua files it has in the avatar folder in a random order. This will very much break the importer, so what we have to do is, use [a specific](https://figura-wiki.pages.dev/tutorials/Avatar-Metadata#autoscripts--string) function of figura, to call specifically geodesicinit.lua, and nothing else from geodesic.
+Figura by default executes any lua files it has in the avatar folder in a random order. This will very much break the importer, so what we have to do is, use [a specific](https://figura-wiki.pages.dev/tutorials/Avatar-Metadata#autoscripts--string) function of figura, to call specifically geodesicinit.lua, and nothing else from geodesic.
 
-I am so sorry if you are grafting this onto an already built avatar, as many avatars dont use this functionality. You will simply have to manually put everything else in there aswell to make them execute again. I would executing geodesicinit.lua last compared to everything if you are doing this, due to step 3.
+I am so sorry if you are grafting this onto an already built avatar, as many avatars dont use this functionality. You will simply have to manually put everything else in there aswell to make them execute again. I would execute geodesicinit.lua last compared to everything if you are doing this, due to step 3.
 
-If you are making an avatar just for this however, I would highly recommend adding a lua file, executed before geodesicinit, to initialize an action wheel page, for the 3rd step.
+If you are making an avatar just for this however, I would highly recommend adding a lua file, executed before geodesicinit.lua, to initialize an action wheel page, for the 3rd step.
 
 ### Step 2:
 
@@ -51,13 +51,13 @@ Finally, you need to include a folder, which contains your .hexpattern files, wh
 
 Next is configuring some variables in the lua files to get this thing to a minimally working state, enough to run with no errors.
 
-In filemapper.lua, on line 119 and 120 are two variables, named Hex_repository, and file_system_location.
-Hex_repository is the name of the folder in figura/data that contains your .hexpattern files, the one you just put in there.
-file_system_location is the action wheel page, in which the relevant geodesic pages get created.
+In filemapper.lua, on line 119 and 120 are two variables, named "Hex_repository", and "file_system_location".
+Hex_repository's value should be set to the name of the folder in figura/data that contains your .hexpattern files, the one you just put in there.
+file_system_location's value should be set to the action wheel page, in which the relevant geodesic pages get created.
 
-In jsonpatternparser.lua, on line 3 is a local variable, patterns_json. By default it is set to the patternsbig.json file you just put in, HOWEVER, if you have changed the name of this file, or are using a custom file, update this variable as necessary.
+In jsonpatternparser.lua, on line 3 is a local variable, "patterns_json". By default it is set to the patternsbig.json, the file we just put in the previous step, HOWEVER, if you have changed the name of this file, or are using a custom / different file, update this variable as necessary.
 
-Fill in all of these with the relevant variables.
+Fill in all of these with the relevant values.
 
 ### Step 4:
 
@@ -127,23 +127,23 @@ Of note is a few things. Both of the auxilliaries use 2 functions defined in hex
 
 As these auxilliaries both use the internet, sometimes they receive a bad response, or no response at all. When this happens, the script prints "Traversal Failed" into the chat, which could either mean that the response didnt come fast enough, or that there was an error. After this, you can simply try again.
 
-If this keeps happening, check the figura networking settings, and if they are good, make the pcall() for the requests print its error message. Additionally, in request(), there is a local variable named limit, on line 24. This should roughly correspond to the miliseconds that the loop should run for, but there is a hard coded delimiter to ensure that it doesnt run forever. Change this if needed.
+If this keeps happening, check the figura networking settings, and if they are good, make the pcall() for the requests print its error message. Additionally, in request(), there is a local variable named "limit", on line 24. This should roughly correspond to the miliseconds that the loop should run for, but there is a hard coded delimiter to ensure that it doesnt run forever. Change the limit if needed.
 
 ### Custom Patterns:
 
 In customdefinitions.lua, are 4 tables, the first two of which is relevant for this section. The tables are identical in functionality and get merged at runtime, but they are kept seperate in code for the sake of organization.
 
-The first table, custom_pattern_list, is meant for registering custom patterns. There is a handy example pattern included in it for this purpose.
+The first table, "custom_pattern_list", is meant for registering custom patterns. There is a handy example pattern included in it for this purpose.
 
-The second table, replacement_pattern_list, does the same thing but is meant for any hexcasting patterns that you want to replace. This probably will not be needed, but is included regardless.
+The second table, "replacement_pattern_list", does the same thing but is meant for any hexcasting patterns that you want to replace. This probably will not be needed, but is included regardless.
 
 ### Functions & Custom Function Definition:
 
-Continuing the previous section is the next 2 tables, which are used to define functions. These functions get unrolled at runtime, and are not actual function calls, hexcasting side (For that, use hexicals grimoires I think).
+Continuing the previous section is the next 2 tables, which are used to define functions. These functions get flattened into the hex at runtime, and are not actual function calls hexcasting side (For that, use hexicals grimoires I think).
 
-inline_function_list is meant for defining "inline functions", as in, all the components of the function is defined in the lua script itself. There is a handy example for this aswell, the field "ismultipleiotas" needs to be true, and all the components included as an indexed list with no gaps.
+"inline_function_list" is meant for defining "inline functions", as in, all the components of the function is defined in the lua script itself. To make it work this way, the field "ismultipleiotas" needs to be true, and all the components included as an indexed list with no gaps. There is an example included, but nonetheless.
 
-external_function_list is meant for calling seperate .hexpattern files as functions. These files are processed the same way as all others, and then the result is put into the hex at the spot of the function call, somewhat akin to flattening a list. Once again, there is an example included, the field "isexternalfunction" needs to be true, and the location of the file needs to go into "functionlocation", starting from the figura/data folder but not including it.
+"external_function_list" is meant for calling seperate .hexpattern files as functions. These files are processed the same way as all others, and then the result is put into the hex at the spot of the function call, somewhat akin to flattening a list. Once again, there is an example included, the field "isexternalfunction" needs to be true, and the location of the file needs to go into "functionlocation", starting from the figura/data folder but not including it.
 
 For the external functions, the possibility of infinite recursive calls exists, which would crash your game (Well, freeze it indefinitely). To stop this from happening, a recursion limiter is implemented in hexpattoanglesig.lua, at line 101, it is 1 by default. Feel free to change this to allow for any depth of recursion wanted.
 
@@ -153,22 +153,24 @@ The custom syntax is defined in customsyntax.lua, in a table similar to the cust
 
 A few examples, from my own use of the importer:
 
-["%(.*%)"] = {dir = "EAST", anglesig = "", ishexpattern = true}\
-This matches any "(thing here)", and replaces it with bookkeepers: -, a simple placeholder syntax
+`["%(.*%)"] = {dir = "EAST", anglesig = "", ishexpattern = true}`\
+This matches any *"(text here)"*, and replaces it with **bookkeepers: -**, a simple placeholder syntax.
 
-["^%(//"] = {ishexpattern = false}\
-["^%)//"] = {ishexpattern = false}\
-These specifically match "(//", and ")//" at the beginning of a line, and simply delete them
+`["^%(//"] = {ishexpattern = false}`\
+`["^%)//"] = {ishexpattern = false}`\
+These specifically match *"(//"*, and *")//"* at the beginning of a line, and simply delete them. I use them to denote the beginnings and ends of optional sections of hexes.
 
 ### The Endpoints:
 
-To understand and implement new endpoints, I would highly recommend reading The Importation Pipeline section, to understand how the importer works. 
+To understand and implement new endpoints, I would highly recommend reading The Importation Pipeline Section, to understand how the importer works. 
 
 Aside from that, the way the endpoints work is, when a server with the given endpoint is detected, perworldconfig.lua goes over the specific endpoint table, and replaces all the functions with functions defined in it. You can replace any function through this, but I would recommend sticking to ones in hexporterfigura.lua
 
+By default, the functions in hexporterfigura.lua are configured for mediatransport. In the perworldendpoints.lua file, the mediatransport functions are thus simply assigned to themselves, so while they do get replaced, they do not get changed in any way when the mediatransport endpoint is being used.
+
 ### Custom Icons:
 
-At the start of filemapper.lua, there is a table, named folder_icons. This table can be used to give your folders specific icons, to make recognizing them ingame more easier. There is an example included.
+At the start of filemapper.lua, there is a table, named "folder_icons". This table can be used to give your folders specific icons, to make recognizing them ingame more easier. There is an example included.
 
 ### UI Sounds:
 
@@ -222,8 +224,16 @@ The caller does two things, first, it checks if the importer is busy, if it is, 
 
 The prepper acts merely as a wrapper for two functions, hexpattoanglesig(), and partitioner(). 
 
-The first of the two, hexpattoanglesig(), is a wrapper for everything in the similarly named hexpattoanglesig.lua, and is the heart of the importer. This function first checks for unwanted recursion, erroring if so, before calling two functions, hexpattrimmed(), which is the pre processing step for the raw text that gets rid of comments, changes some syntax, and puts all the lines into an indexed table with no gaps, before handing it off to hextrimmedtopatterns(), which replaces every pattern name with its angle signature and direction, aswell as handling the special handlers, and performing any function flattening or calling. 
+The first of the two, hexpattoanglesig(), is a wrapper for everything in the similarly named hexpattoanglesig.lua, and is the heart of the importer. This function first checks for unwanted recursion, erroring if so, before calling two functions, hexpattrimmed(), which is the pre processing step for the raw text that gets rid of comments, changes some syntax, and puts all the lines into an indexed table with no gaps, before handing it off to hextrimmedtopatterns(), which replaces every pattern name with its angle signature and direction, aswell as handling the special handlers, and performing any function flattening or calling (This last part is where the recursion check is truly used, as the same hexpattoanglesig() function is called for any external function calls). 
 
 After this rather complex process, its result is partitioned by the second call of the prepper, the partitioner(), and then the final, partitioned result is assigned to the variable request_partition by the caller, which is used by the hexporter to import hexes.
 
 After this process, the hexporter notices it has a new request, marks itself as busy, and starts importing according to its configuration, using our final function, sender(), to do so (Once again in pcall()). After it is finished, it flushes the relevant variables assigned by the caller to their defaults, and marks itself as ready once again.
+
+### A few key notes on the importation pipeline & the importer
+
+The hexporter itself, that gets configured and then utilizes an endpoint to do the actual information transmission, does not (usually) do any checks on if a specific entry on the table it is given is a valid iota or not. Thus, I would highly recommend doing such checks in the processing stage in hexpattoanglesig() (And its file hexpattoanglesig.lua), or potentially in the partitioner. 
+
+While the "preprocessor" for the mediatransport sender function, hexpatserializer(), does have an "ishexpattern" check, this was implemented primarily because mediatransport can send more than just patterns, and I wanted to potentially use it in the future.
+
+The current number special handler that is used (illegalnumgen()) is capable of generating arbitrary numbers, but its results are often bulky, and simply impossible to create by hand more often than not. While solving this issue for decimals is a huge difficulty, the patternsbig.json does have roughly 2000 precomputed integer numerical reflections, covering +1000 to -1000. These are currently not brought into pattern_list, but the code blocks necessary is still there in jsonpatternparser.lua, so feel free to do so. Simply uncomment the code blocks, and then refresh the cached list with emptypatlist(), and reloading your avatar (Or reparsepatlist(), which does the whole process again rather than simply emptying the cached result).
