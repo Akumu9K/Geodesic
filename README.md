@@ -10,7 +10,7 @@ It has quite a few features, such as:
 - Function definition and unfolding upon importation
 - ...And more
 
-This importer is meant to work with the vscode addon for hexcasting, by object-Object, and its format .hexpattern\
+This importer is meant to work with the vscode addon for hexcasting, by [object-Object](https://github.com/object-Object), and its format .hexpattern\
 (Sorry hexparse enjoyers)
 
 ## Disclaimer
