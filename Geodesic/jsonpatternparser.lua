@@ -2,8 +2,6 @@
 
 local patterns_json = "patternsbig.json" -- This is the default name, change it if you use another json for this
 
-if host:isHost() then
-
 pattern_list = config:load("pattern_list")
 if pattern_list == nil then
     local patterns_raw = (parseJson(file:readString(patterns_json, "utf8")))
@@ -18,8 +16,6 @@ if pattern_list == nil then
     --]]
     config:save("pattern_list", patterns_processed)
     pattern_list = config:load("pattern_list")
-end
-
 end
 
 -- Runtime Functions:

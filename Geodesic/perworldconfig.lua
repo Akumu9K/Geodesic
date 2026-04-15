@@ -1,4 +1,3 @@
-if host:isHost() then
 function events.entity_init()
 
 local per_world_config = (parseJson(file:readString("perworldconfig.json", "utf8")))
@@ -39,7 +38,6 @@ for k, v in pairs(Endpoint_Table[server_data["endpoint"]] or {}) do
     changevar(k, v)
 end
 
-end
 end
 
 -- Utility Functions:

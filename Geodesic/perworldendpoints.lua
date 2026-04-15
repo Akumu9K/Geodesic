@@ -4,10 +4,9 @@ Endpoint_Table = {}
 
 -- Endpoints:
 
-if host:isHost() then
 function events.entity_init()
 
-Mediatransport = { -- The default, thus all the relevant functions are defined as themselves
+local Mediatransport = { -- The default, thus all the relevant functions are defined as themselves
     sender = sender,
     partitioner = partitioner,
     hexpatserializer = hexpatserializer,
@@ -15,18 +14,17 @@ Mediatransport = { -- The default, thus all the relevant functions are defined a
 }
 Endpoint_Table["Mediatransport"] = Mediatransport
 
-Moreiotas = { -- Moreiotas + Hexical
+local Moreiotas = { -- Moreiotas + Hexical
     sender = textsender,
     partitioner = dynpartitioner,
 }
 Endpoint_Table["Moreiotas"] = Moreiotas
 
-Hexparse = { -- To be made, just here as a reminder to make it
+local Hexparse = { -- To be made, just here as a reminder to make it
 
 }
 Endpoint_Table["Hexparse"] = Hexparse
 
-end
 end
 
 -- Endpoint Functions:

@@ -98,56 +98,54 @@ next_partition = -1
 total_bytes_sent = -1
 total_iotas_sent = -1
 
-if host:isHost() then
-    function events.tick()
-        if (#request_partition ~= 0) and (isbusy == false) then
-            -- Request Acceptor
-            current_partition_list = request_partition
+function events.tick()
+    if (#request_partition ~= 0) and (isbusy == false) then
+        -- Request Acceptor
+        current_partition_list = request_partition
+        request_partition = {}
+        next_partition = 1
+        request_tick = world.getTime()
+        isbusy = true
+        infobuttonsetter()
+        total_bytes_sent = 0
+        total_iotas_sent = 0
+    end
+    if (isbusy == true) then
+        if (current_partition_list[next_partition] == nil) and (return_time < 0) then
+            -- Resetter
+            request_tick = -1
             request_partition = {}
-            next_partition = 1
-            request_tick = world.getTime()
-            isbusy = true
+            return_time = world.getTime() + return_delay
+            current_partition_list = {}
+            next_partition = -1
+            print("Total Iotas & Bytes Sent: " .. total_iotas_sent .. " / " .. total_bytes_sent)
+            total_bytes_sent = -1
+            total_iotas_sent = -1
+        end
+        if (world.getTime() > return_time) and (return_time > 0) then
+            -- Next request delay mechanism
+            isbusy = false
             infobuttonsetter()
-            total_bytes_sent = 0
-            total_iotas_sent = 0
+            return_time = -1
+            print("Ready For Next Request")
         end
-        if (isbusy == true) then
-            if (current_partition_list[next_partition] == nil) and (return_time < 0) then
-                -- Resetter
-                request_tick = -1
-                request_partition = {}
-                return_time = world.getTime() + return_delay
-                current_partition_list = {}
-                next_partition = -1
-                print("Total Iotas & Bytes Sent: " .. total_iotas_sent .. " / " .. total_bytes_sent)
-                total_bytes_sent = -1
-                total_iotas_sent = -1
+    end
+    if (world.getTime() > request_tick) and (request_tick > 0) then
+        -- Sender
+        request_tick = request_tick + part_delay
+        local batches = batch_size
+        for i = 1, batches, 1 do
+            if current_partition_list[next_partition] == nil then
+                break
             end
-            if (world.getTime() > return_time) and (return_time > 0) then
-                -- Next request delay mechanism
-                isbusy = false
-                infobuttonsetter()
-                return_time = -1
-                print("Ready For Next Request")
+            local success, ret = pcall(sender,current_partition_list[next_partition])
+            if success == false then
+                print(ret)
+            else
+                total_bytes_sent = total_bytes_sent + ret
+                total_iotas_sent = total_iotas_sent + #current_partition_list[next_partition]
             end
-        end
-        if (world.getTime() > request_tick) and (request_tick > 0) then
-            -- Sender
-            request_tick = request_tick + part_delay
-            local batches = batch_size
-            for i = 1, batches, 1 do
-                if current_partition_list[next_partition] == nil then
-                    break
-                end
-                local success, ret = pcall(sender,current_partition_list[next_partition])
-                if success == false then
-                    print(ret)
-                else
-                    total_bytes_sent = total_bytes_sent + ret
-                    total_iotas_sent = total_iotas_sent + #current_partition_list[next_partition]
-                end
-                next_partition = next_partition + 1
-            end
+            next_partition = next_partition + 1
         end
     end
 end

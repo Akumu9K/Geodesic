@@ -1,6 +1,6 @@
 -- Custom Folder Icons:
 
-folder_icons = {
+local folder_icons = {
     ["FOLDER NAME"] = "item_id",
 }
 
@@ -116,7 +116,6 @@ file_system = action_wheel:newPage()
 Hex_repository = nil -- The name of the folder in figura/data which contains .hexpattern files to be imported
 file_system_location = nil -- Action wheel page variable, where the geodesic page, and also the page for auxillaries, gets created
 
-if host:isHost() then
 function events.entity_init()
 
 geodesic_filemap_goto_action = file_system_location:newAction()
@@ -148,7 +147,6 @@ geodesic_filemap_recalc_and_info = file_system:newAction()
         buttonclick()
     end)
 
-end
 end
 
 -- Map Recalculation:
