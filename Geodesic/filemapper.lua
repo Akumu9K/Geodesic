@@ -106,6 +106,9 @@ end
 
 function reader(str,filename)
     local processed_string = "\n" .. string.gsub(str, "\r", "") -- .. "\n\n" .. "File Read: " .. filename
+    if string.match(processed_string, "\n$") ~= nil then -- To get rid of leading newline
+        processed_string = string.sub(processed_string, 1, -2)
+    end
     print(processed_string)
     print(filename)
 end
