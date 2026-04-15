@@ -1,6 +1,6 @@
 -- Repos:
 
-Repos = {
+local Repos = {
     {"USER","REPO","GIT TOKEN (Optional)"},
 }
 
