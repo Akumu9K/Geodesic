@@ -237,3 +237,7 @@ The hexporter itself, that gets configured and then utilizes an endpoint to do t
 While the "preprocessor" for the mediatransport sender function, hexpatserializer(), does have an "ishexpattern" check, this was implemented primarily because mediatransport can send more than just patterns, and I wanted to potentially use it in the future.
 
 The current number special handler that is used (illegalnumgen()) is capable of generating arbitrary numbers, but its results are often bulky, and simply impossible to create by hand more often than not. While solving this issue for decimals is a huge difficulty, the patternsbig.json does have roughly 2000 precomputed integer numerical reflections, covering +1000 to -1000. These are currently not brought into pattern_list, but the code blocks necessary is still there in jsonpatternparser.lua, so feel free to do so. Simply uncomment the code blocks, and then refresh the cached list with emptypatlist(), and reloading your avatar (Or reparsepatlist(), which does the whole process again rather than simply emptying the cached result).
+
+## Final Notes
+
+In regards to the script formatting option of figura, please do not use AST. It shouldnt break the key functions but it still does break a few things so I absolutely would not recommend.
