@@ -39,5 +39,5 @@ function reparsepatlist()
     pattern_list = config:load("pattern_list")
     --require("Hexcasting.Geodesic.perworldpats")
     --require("Hexcasting.Geodesic.custompatterns")
-    require("./perworldconfig")
+    host:sendChatCommand("figura reload")
 end
