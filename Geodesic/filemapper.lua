@@ -105,13 +105,17 @@ function initmap()
 end
 
 function reader(str,filename)
-    local processed_string = "\n" .. string.gsub(str, "\r", "") -- .. "\n\n" .. "File Read: " .. filename
-    if string.match(processed_string, "\n$") ~= nil then -- To get rid of leading newline
-        processed_string = string.sub(processed_string, 1, -2)
+    str = string.gsub(str, "\r\n", "\n")
+    str = string.gsub(str, "\n\r", "\n")
+    str = string.gsub(str, "\r", "\n")
+    str = "\n" .. str 
+    if string.match(str, "\n$") ~= nil then -- To get rid of leading newline
+        str  = string.sub(str, 1, -2)
     end
-    print(processed_string)
+    print(str)
     print(filename)
 end
+
 
 -- Init:
 
