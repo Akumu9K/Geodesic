@@ -1,9 +1,10 @@
--- Init:
+-- Pattern Json:
 
-local patterns_json = "patternsbig.json" -- This is the default name, change it if you use another json for this
+local patterns_json = "patternsbig.json"
 
-pattern_list = config:load("pattern_list")
-if pattern_list == nil then
+-- Main Functions:
+
+function parsepatlist()
     local patterns_raw = (parseJson(file:readString(patterns_json, "utf8")))
     local patterns_processed = {}
     for k, v in pairs(patterns_raw["patterns"]) do
@@ -14,6 +15,14 @@ if pattern_list == nil then
         patterns_processed[k] = {dir = v["direction"], anglesig = v["signature"]}
     end
     --]]
+    return patterns_processed
+end
+
+-- Init:
+
+pattern_list = config:load("pattern_list")
+if pattern_list == nil then
+    local patterns_processed = parsepatlist()
     config:save("pattern_list", patterns_processed)
     pattern_list = config:load("pattern_list")
 end
@@ -25,16 +34,7 @@ function emptypatlist()
 end
 
 function reparsepatlist()
-    local patterns_raw = (parseJson(file:readString(patterns_json, "utf8")))
-    local patterns_processed = {}
-    for k, v in pairs(patterns_raw["patterns"]) do
-        patterns_processed[v["name"]] = {dir = v["direction"], anglesig = v["signature"], ishexpattern = true}
-    end
-    --[[
-    for k, v in pairs(patterns_raw["pregenerated_numbers"]) do
-        patterns_processed[k] = {dir = v["direction"], anglesig = v["signature"]}
-    end
-    --]]
+    local patterns_processed = parsepatlist()
     config:save("pattern_list", patterns_processed)
     pattern_list = config:load("pattern_list")
     --require("Hexcasting.Geodesic.perworldpats")
