@@ -176,6 +176,14 @@ At the start of filemapper.lua, there is a table, named "folder_icons". This tab
 
 In UIsounds.lua are a few sound functions, which act as "sound effects" for the UI of the importer. They are only played on your side, but if they bother you, feel free to empty them, or simply excise any calls of them in filemapper.lua, hexparty-aux.lua and github-aux.lua. You could also change the sounds, its up to you.
 
+### Mediatransport Receive Parser:
+
+This feature is currently a stub that does not do anything (Of note), mentioned for the sake of documentation.
+
+It merely parses the iotas it receives from mediatransports 2 send functions (One for you sending to your avatar, and the other for someone else sending to your avatar), and prints the result.
+
+As this feature only works with a single endpoint, I am not sure whether building a few more features ontop of it is worthwhile, but included nonetheless.
+
 ## Performance
 
 The exact performance depends upon the endpoint and file input used, but it ranges from adequate to outstanding.

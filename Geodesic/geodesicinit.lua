@@ -14,4 +14,6 @@ require("./perworldendpoints")
 require("./perworldconfig")
 
 require("./Auxilliaries.auxinit")
+
+require("./mediatransportparser")
 end
