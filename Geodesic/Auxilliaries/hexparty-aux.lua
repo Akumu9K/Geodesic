@@ -64,7 +64,7 @@ function hexpartymap(page, path)
         local istraversedpreviously = false
         local page_shift = prev_page:getSlotsShift()
         local go_to_action = prev_page:newAction()
-            :title(next_path)
+            :title(whitespaceenforcer(next_path))
             :item("chest")
             :onLeftClick(function()
                 if istraversedpreviously == false then
@@ -101,7 +101,7 @@ function hexpartymap(page, path)
         local next_path = path .. v["href"]
         local fileext = string.sub(v["href"], string.find(v["href"], "%.") or 1, -1)
         local file_action = prev_page:newAction()
-            :title(next_path)
+            :title(whitespaceenforcer(next_path))
             :item("paper")
             :onLeftClick(function()
                 print("Incompatible File")
@@ -181,3 +181,7 @@ local return_action = hexparty_start_page:newAction()
     end)
 
 -- Utility Functions:
+
+function whitespaceenforcer(str)
+    return string.gsub(str, "%%20", " ")
+end
