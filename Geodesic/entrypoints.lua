@@ -62,7 +62,9 @@ function hextweakstablehandler(str)
     end
 
     for i, v in ipairs(table) do
-        if v["angles"] == nil or v["startDir"] == nil then
+        if type(v) ~= "table" then
+            result[#result+1] = placeholder
+        elseif v["angles"] == nil or v["startDir"] == nil then
             result[#result+1] = placeholder
         else
             local pattern = {ishexpattern = true, anglesig = v["angles"], dir = v["startDir"]}
