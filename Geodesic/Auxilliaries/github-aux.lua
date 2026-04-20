@@ -88,7 +88,7 @@ function githubmap(page, path, repobaseurl, repofilegeturl, git_token)
                     errorclick()
                 end
             end)
-        if fileext == ".hexpattern" then
+        if fileext == ".hexpattern" or fileext == ".txt" or fileext == ".json" then
             file_action:onLeftClick(function()
                 local reqsucc, reqret = pcall(githubrequestwrapper, repofilegeturl .. next_path, git_token)
                 if reqsucc == true then

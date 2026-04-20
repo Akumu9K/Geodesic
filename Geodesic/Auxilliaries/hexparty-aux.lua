@@ -116,7 +116,7 @@ function hexpartymap(page, path)
                     errorclick()
                 end
             end)
-        if fileext == ".hexpattern" then
+        if fileext == ".hexpattern" or fileext == ".txt" or fileext == ".json" then
             file_action:onLeftClick(function()
                 local reqsucc, reqret = pcall(hexpartyrequestwrapper, baseurl .. next_path)
                 if reqsucc == true then

@@ -9,6 +9,7 @@ require("./customdefinitions")
 require("./customsyntax")
 
 require("./hexpattoanglesig")
+require("./entrypoints")
 require("./hexporterfigura")
 require("./perworldendpoints")
 require("./perworldconfig")

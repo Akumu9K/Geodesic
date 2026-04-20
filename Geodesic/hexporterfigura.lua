@@ -5,7 +5,7 @@ function partitioner(table, partition_size, max_partition) -- Placeholder for an
 end
 
 function prepper(str) 
-    local anglesiglist = hexpattoanglesig(str)
+    local anglesiglist = formatfinder(str)
     local partitioned_list = partitioner(anglesiglist,part_size,max_part)
     return partitioned_list
 end

@@ -168,6 +168,12 @@ Aside from that, the way the endpoints work is, when a server with the given end
 
 By default, the functions in hexporterfigura.lua are configured as placeholders that dont do anything. They have to be replaced through perworldendpoints.lua, and perworldconfig.lua, for importation to happen.
 
+### The Entrypoints:
+
+The entrypoints are essentially hex formats that the importer can handle. By default it is built for .hexpattern, so many of the aforomentioned features are not possible to utilize on the other entrypoints (Hexparty Json, Hextweaks Lua Table) currently implemented.
+
+As with the endpoints, highly recommend looking into the Importation Pipeline to figure out how to implement new entrypoints.
+
 ### Custom Icons:
 
 At the start of filemapper.lua, there is a table, named "folder_icons". This table can be used to give your folders specific icons, to make recognizing them ingame more easier. There is an example included.
@@ -220,9 +226,11 @@ Everything else after this, from the custom definitions to per world patterns, i
 
 After this, the patternlistadjust.lua, customdefinitions.lua, and customsyntax.lua runs. The first merely adds some key syntax which is found in .hexpattern formats regular syntax, to pattern_list, while the second adds the custom defined patterns and functions, and finally the third initializes its own table.
 
-After those main steps of initialization, the importer itself is initialized, with hexpattoanglesig.lua and hexporterfigura.lua being called first, the first is the heart of the importer that is responsible for the raw text to hex pattern conversion, while the latter handles the importation process
+After those main steps of initialization, the importer itself is initialized, with hexpattoanglesig.lua, entrypoints.lua and hexporterfigura.lua being called first, hexpattoanglesig.lua is the heart of the importer that is responsible for the raw text to hex pattern conversion, while entrypoints.lua registers the entrypoint handlers, and finally, hexporterfigura.lua handles the importation process
 
-Before perworldendpoints.lua and perworldconfig.lua is called, to finally initialize the server/world specific aspects of the importer; the endpoints, the settings for the importer, and finally, the per world patterns.
+Then perworldendpoints.lua and perworldconfig.lua is called, to finally initialize the server/world specific aspects of the importer; the endpoints, the settings for the importer, and finally, the per world patterns.
+
+Finally, mediatransportparser.lua is called, to initialize the mediatransport receive parsers.
 
 ### The Importation Pipeline:
 
@@ -232,9 +240,11 @@ If they succeed, they pass the raw text result to another pcall(), this time cal
 
 The caller does two things, first, it checks if the importer is busy, if it is, it returns false to signal that importation cannot currently happen. But if it is not busy, then secondly, it initializes a few of the hexporters variables with values needed for its importation, calling the prepper() on the raw text result it has been given to do so.
 
-The prepper acts merely as a wrapper for two functions, hexpattoanglesig(), and partitioner(). 
+The prepper acts merely as a wrapper for two functions, formatfinder(), and partitioner().
 
-The first of the two, hexpattoanglesig(), is a wrapper for everything in the similarly named hexpattoanglesig.lua, and is the heart of the importer. This function first checks for unwanted recursion, erroring if so (although at this stage, this check is pretty useless), before calling two functions;\
+Formatfinder handles the entrypoint selection, figuring out which format the provided text is in, handling it according to the format, and passing it along to the prepper accordingly. The current implemented secondary entrypoints, Hexparty Json, and Hextweaks Lua Table, merely do some table key shifting around to make the tables useable by the importer. The primary one, which the importer was built around and meant to use, .hexpattern, is handled by calling hexpattoanglesig().
+
+Hexpattoanglesig is a wrapper for everything in the similarly named hexpattoanglesig.lua, and is the heart of the importer and its primary entrypoint. This function first checks for unwanted recursion, erroring if so (although at this stage, this check is pretty useless), before calling two functions;\
 Hexpattrimmed(), which is the pre processing step for the raw text that gets rid of comments, changes some syntax, and puts all the lines into an indexed table with no gaps,\
 Before handing it off to hextrimmedtopatterns(), which replaces every pattern name with its angle signature and direction, aswell as handling the special handlers, and performing any function flattening or calling (This last part is where the recursion check is truly used, as the same hexpattoanglesig() function is called for any external function calls).
 
@@ -249,6 +259,8 @@ The hexporter itself, that gets configured and then utilizes an endpoint to do t
 While the "preprocessor" for the mediatransport sender function, hexpatserializer(), does have an "ishexpattern" check, this was implemented primarily because mediatransport can send more than just patterns, and I wanted to potentially use that in the future.
 
 The current number special handler that is used (illegalnumgen()) is capable of generating arbitrary numbers, but its results are often bulky, and simply impossible to create by hand more often than not. While solving this issue for decimals is a huge difficulty, the patternsbig.json does have roughly 2000 precomputed integer numerical reflections, covering +1000 to -1000. These are currently not brought into pattern_list, but the code block necessary is still there in jsonpatternparser.lua, so feel free to do so. Simply uncomment the code block, and then refresh the cached list with emptypatlist(), and reloading your avatar (Or reparsepatlist(), which does the whole process again rather than simply emptying the cached result).
+
+The current implementation of the entrypoints are, sketchy at best. I do hope to polish them so that I can implement true hexparse compatibility, but until then, they merely serve as providing further interop with hexparty and hextweaks.
 
 ## Final Notes
 

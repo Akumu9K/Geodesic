@@ -11,7 +11,8 @@ function maphex(str)
     local local_nodes = file:list(str)
     local full_map = {}
     for k, v in pairs(local_nodes) do
-        if file:isFile(start_path .. v) and (nil ~= (string.find(v, ".hexpattern"))) then
+        local fileext = string.sub(v, string.find(v, "%.") or 1, -1)
+        if file:isFile(start_path .. v) and (fileext == ".hexpattern" or fileext == ".txt" or fileext == ".json") then
             full_map[k] = {path = (start_path .. v), name = v, isHexpattern = true, isDirectory = false}
         elseif file:isDirectory((start_path .. v)) and (string.find(v, "%.") == nil) then
             local table_construct = {path = (start_path .. v), name = v, isHexpattern = false, isDirectory = true, files = nil}
