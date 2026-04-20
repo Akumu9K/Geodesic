@@ -164,9 +164,9 @@ These specifically match *"(//"*, and *")//"* at the beginning of a line, and si
 
 To understand and implement new endpoints, I would highly recommend reading The Importation Pipeline Section, to understand how the importer works. 
 
-Aside from that, the way the endpoints work is, when a server with the given endpoint is detected, perworldconfig.lua goes over the specific endpoint table, and replaces all the functions with functions defined in it. You can replace any function through this, but I would recommend sticking to ones in hexporterfigura.lua
+Aside from that, the way the endpoints work is, when a server with the given endpoint is detected, perworldconfig.lua goes over the specific endpoint table, and replaces all the functions with functions defined in it. You can replace any function through this, but I would recommend sticking to ones in hexporterfigura.lua (And mainly to sender(), and partitioner())
 
-By default, the functions in hexporterfigura.lua are configured for mediatransport. In the perworldendpoints.lua file, the mediatransport functions are thus simply assigned to themselves, so while they do get replaced, they do not get changed in any way when the mediatransport endpoint is being used.
+By default, the functions in hexporterfigura.lua are configured as placeholders that dont do anything. They have to be replaced through perworldendpoints.lua, and perworldconfig.lua, for importation to happen.
 
 ### Custom Icons:
 
@@ -220,7 +220,9 @@ Everything else after this, from the custom definitions to per world patterns, i
 
 After this, the patternlistadjust.lua, customdefinitions.lua, and customsyntax.lua runs. The first merely adds some key syntax which is found in .hexpattern formats regular syntax, to pattern_list, while the second adds the custom defined patterns and functions, and finally the third initializes its own table.
 
-After those main steps of initialization, the importer itself is initialized, with hexpattoanglesig.lua and hexporterfigura.lua being called, before perworldendpoints.lua and perworldconfig.lua is called, to finally initialize the server/world specific aspects of the importer.
+After those main steps of initialization, the importer itself is initialized, with hexpattoanglesig.lua and hexporterfigura.lua being called first, the first is the heart of the importer that is responsible for the raw text to hex pattern conversion, while the latter handles the importation process
+
+Before perworldendpoints.lua and perworldconfig.lua is called, to finally initialize the server/world specific aspects of the importer; the endpoints, the settings for the importer, and finally, the per world patterns.
 
 ### The Importation Pipeline:
 
@@ -232,7 +234,9 @@ The caller does two things, first, it checks if the importer is busy, if it is, 
 
 The prepper acts merely as a wrapper for two functions, hexpattoanglesig(), and partitioner(). 
 
-The first of the two, hexpattoanglesig(), is a wrapper for everything in the similarly named hexpattoanglesig.lua, and is the heart of the importer. This function first checks for unwanted recursion, erroring if so, before calling two functions, hexpattrimmed(), which is the pre processing step for the raw text that gets rid of comments, changes some syntax, and puts all the lines into an indexed table with no gaps, before handing it off to hextrimmedtopatterns(), which replaces every pattern name with its angle signature and direction, aswell as handling the special handlers, and performing any function flattening or calling (This last part is where the recursion check is truly used, as the same hexpattoanglesig() function is called for any external function calls). 
+The first of the two, hexpattoanglesig(), is a wrapper for everything in the similarly named hexpattoanglesig.lua, and is the heart of the importer. This function first checks for unwanted recursion, erroring if so (although at this stage, this check is pretty useless), before calling two functions;\
+Hexpattrimmed(), which is the pre processing step for the raw text that gets rid of comments, changes some syntax, and puts all the lines into an indexed table with no gaps,\
+Before handing it off to hextrimmedtopatterns(), which replaces every pattern name with its angle signature and direction, aswell as handling the special handlers, and performing any function flattening or calling (This last part is where the recursion check is truly used, as the same hexpattoanglesig() function is called for any external function calls).
 
 After this rather complex process, its result is partitioned by the second call of the prepper, the partitioner(), and then the final, partitioned result is assigned to the variable request_partition by the caller, which is used by the hexporter to import hexes.
 
@@ -242,9 +246,9 @@ After this process, the hexporter notices it has a new request, marks itself as 
 
 The hexporter itself, that gets configured and then utilizes an endpoint to do the actual information transmission, does not (usually) do any checks on if a specific entry on the table it is given is a valid iota or not. Thus, I would highly recommend doing such checks in the processing stage in hexpattoanglesig() (And its file hexpattoanglesig.lua), or potentially in the partitioner. 
 
-While the "preprocessor" for the mediatransport sender function, hexpatserializer(), does have an "ishexpattern" check, this was implemented primarily because mediatransport can send more than just patterns, and I wanted to potentially use it in the future.
+While the "preprocessor" for the mediatransport sender function, hexpatserializer(), does have an "ishexpattern" check, this was implemented primarily because mediatransport can send more than just patterns, and I wanted to potentially use that in the future.
 
-The current number special handler that is used (illegalnumgen()) is capable of generating arbitrary numbers, but its results are often bulky, and simply impossible to create by hand more often than not. While solving this issue for decimals is a huge difficulty, the patternsbig.json does have roughly 2000 precomputed integer numerical reflections, covering +1000 to -1000. These are currently not brought into pattern_list, but the code blocks necessary is still there in jsonpatternparser.lua, so feel free to do so. Simply uncomment the code blocks, and then refresh the cached list with emptypatlist(), and reloading your avatar (Or reparsepatlist(), which does the whole process again rather than simply emptying the cached result).
+The current number special handler that is used (illegalnumgen()) is capable of generating arbitrary numbers, but its results are often bulky, and simply impossible to create by hand more often than not. While solving this issue for decimals is a huge difficulty, the patternsbig.json does have roughly 2000 precomputed integer numerical reflections, covering +1000 to -1000. These are currently not brought into pattern_list, but the code block necessary is still there in jsonpatternparser.lua, so feel free to do so. Simply uncomment the code block, and then refresh the cached list with emptypatlist(), and reloading your avatar (Or reparsepatlist(), which does the whole process again rather than simply emptying the cached result).
 
 ## Final Notes
 

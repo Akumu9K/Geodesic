@@ -1,3 +1,5 @@
+-- Init:
+
 function events.entity_init()
 
 local per_world_config = (parseJson(file:readString("perworldconfig.json", "utf8")))
@@ -17,8 +19,8 @@ else
     end
 end
 
-if server_data == {} then
-    error("Something went wrong during the per world config loading process")
+if (server_data == {}) or (server_data == nil) then
+    error("No server/singleplayer defaults found in perworldconfig.json, or the aforomentioned file does not exist in figura/data/")
 end
 
 for k, v in pairs(server_data["patterns"]) do
@@ -32,6 +34,10 @@ part_size = server_data["config"]["part_size"] or part_size
 part_delay = server_data["config"]["part_delay"] or part_delay
 batch_size = server_data["config"]["batch_size"] or batch_size
 return_delay = server_data["config"]["return_delay"] or return_delay
+
+if Endpoint_Table[server_data["endpoint"]] == nil then
+    error("Invalid endpoint, or endpoint not found.")
+end
 
 for k, v in pairs(Endpoint_Table[server_data["endpoint"]] or {}) do
     if v == nil then return end
