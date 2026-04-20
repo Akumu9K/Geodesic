@@ -27,7 +27,7 @@ function hexpartyjsonhandler(str)
         error("Format is not hexparty json")
         return
     end
-    if #table >= 0 then
+    if #table <= 0 then
         error("Format is not hexparty json")
         return
     end
