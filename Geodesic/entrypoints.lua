@@ -27,20 +27,22 @@ function hexpartyjsonhandler(str)
         error("Format is not hexparty json")
         return
     end
+    if #table >= 0 then
+        error("Format is not hexparty json")
+        return
+    end
 
     for i, v in ipairs(table) do
         if type(v) ~= "table" then
-            error("Format is not hexparty json")
-            return
-        end
-
-        if v["angles"] == nil or v["startDir"] == nil then
+            result[#result+1] = placeholder
+        elseif v["angles"] == nil or v["startDir"] == nil then
             result[#result+1] = placeholder
         else
             local pattern = {ishexpattern = true, anglesig = v["angles"], dir = v["startDir"]}
             result[#result+1] = pattern
         end
     end
+
     return result, format_type
 end
 
