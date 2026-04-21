@@ -265,3 +265,5 @@ The current implementation of the entrypoints are, sketchy at best. I do hope to
 ## Final Notes
 
 In regards to the script formatting option of figura, please do not use AST. It shouldnt break the key functions but it still does break a few things so I absolutely would not recommend.
+
+When it comes to buffers for mediatransport, at the very least your script should be able to have atleast 1 buffer open, and the max buffer length should be atleast the max bytes you will be sending in a tick.

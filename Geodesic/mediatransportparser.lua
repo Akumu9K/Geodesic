@@ -31,7 +31,7 @@ local function preparser(buff)
             print("No handler found")
             break
         end
-        buff, result = handler(buff)
+        result = handler(buff)
         output[#output+1] = result
     end
 
@@ -90,7 +90,7 @@ end
 function listhandler(buff)
     local length = buff:readInt()
     local iota = {type = "list", length = length}
-    return buff, iota
+    return iota
 end
 
 function patternhandler(buff)
@@ -102,13 +102,13 @@ function patternhandler(buff)
     end
 
     local iota = {type = "pattern", dir = dir, anglesig = anglesig}
-    return buff, iota
+    return iota
 end
 
 function doublehandler(buff)
     local num = buff:readDouble()
     local iota = {type = "double", value = num}
-    return buff, iota
+    return iota
 end
 
 function stringhandler(buff)
@@ -119,8 +119,8 @@ function stringhandler(buff)
         local char = string.char(char_num)
         str = str .. char
     end
-    iota = {type = "string", value = str}
-    return buff, iota
+    local iota = {type = "string", value = str}
+    return iota
 end
 
 function vectorhandler(buff)
@@ -128,7 +128,7 @@ function vectorhandler(buff)
     local y = buff:readDouble()
     local z = buff:readDouble()
     local iota = {type = "vector", x = x, y = y, z = z}
-    return buff, iota
+    return iota
 end
 
 function matrixhandler(buff)
@@ -146,27 +146,27 @@ function matrixhandler(buff)
             iota[i][j] = flat_table[((i-1)*columns)+j]
         end
     end
-    return buff, iota
+    return iota
 end
 
 function garbagehandler(buff)
     local iota = {type = "garbage"}
-    return buff, iota
+    return iota
 end
 
 function nullhandler(buff)
     local iota = {type = "null"}
-    return buff, iota
+    return iota
 end
 
 function truehandler(buff)
     local iota = {type = "bool", value = true}
-    return buff, iota
+    return iota
 end
 
 function falsehandler(buff)
     local iota = {type = "bool", value = false}
-    return buff, iota
+    return iota
 end
 
 function queryconfighandler(buff)
@@ -186,5 +186,5 @@ function queryconfighandler(buff)
         power_regen_rate = power_regen_rate,
         inter_cost = inter_cost,
     }
-    return buff, result
+    return result
 end
