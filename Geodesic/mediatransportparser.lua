@@ -23,7 +23,6 @@ local function preparser(buff)
 
     for i = 1, iota_limit, 1 do
         if buff:getPosition() >= buff:getLength() then break end
-        local result = nil
         local iota_code = buff:read()
         local handler = iota_handlers[iota_code]
         if handler == nil then
@@ -31,7 +30,7 @@ local function preparser(buff)
             print("No handler found")
             break
         end
-        result = handler(buff)
+        local result = handler(buff)
         output[#output+1] = result
     end
 
@@ -101,7 +100,13 @@ function patternhandler(buff)
         anglesig[#anglesig+1] = buff:read()
     end
 
-    local iota = {type = "pattern", dir = dir, anglesig = anglesig}
+    dir = dir_convert_inv[dir]
+    local anglesig_str = ""
+    for i, v in ipairs(anglesig) do
+        anglesig_str = anglesig_str .. angle_convert_inv[v]
+    end
+
+    local iota = {type = "pattern", dir = dir, anglesig = anglesig_str}
     return iota
 end
 
@@ -188,3 +193,23 @@ function queryconfighandler(buff)
     }
     return result
 end
+
+-- Constants:
+
+dir_convert_inv = {
+    [0] = "NORTH_EAST",
+    [1] = "EAST",
+    [2] = "SOUTH_EAST",
+    [3] = "SOUTH_WEST",
+    [4] = "WEST",
+    [5] = "NORTH_WEST",
+}
+
+angle_convert_inv = {
+    [0] = "w",
+    [1] = "e",
+    [2] = "d",
+    [3] = "s",
+    [4] = "a",
+    [5] = "q",
+}
