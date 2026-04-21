@@ -73,6 +73,8 @@ iota_handlers = {
     [6] = patternhandler,
     [5] = doublehandler,
     [1] = stringhandler,
+    [80] = stringhandler, -- Text iotas have the same format as string iotas
+    [64] = matrixhandler,
     [7] = vectorhandler,
     [255] = garbagehandler,
     [4] = nullhandler,
@@ -126,6 +128,24 @@ function vectorhandler(buff)
     local y = buff:readDouble()
     local z = buff:readDouble()
     local iota = {type = "vector", x = x, y = y, z = z}
+    return buff, iota
+end
+
+function matrixhandler(buff)
+    local rows = buff:read()
+    local columns = buff:read()
+    local total_length = rows * columns
+    local flat_table = {}
+    for i = 1, total_length, 1 do
+        flat_table[#flat_table+1] = buff:readDouble()
+    end
+    local iota = {type = "matrix"}
+    for i = 1, rows, 1 do
+        iota[#iota+1] = {}
+        for j = 1, columns, 1 do
+            iota[i][j] = flat_table[((i-1)*columns)+j]
+        end
+    end
     return buff, iota
 end
 
