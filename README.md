@@ -202,7 +202,7 @@ The calls of the assembler work by initializating the relevant values onto the s
 
 The unrolled macros pose a risk of leading to infinite recursion if they refer to each other, or a macro refers to itself in itself, thus, on line 72 in textparser.lua, there is a macro depth limit variable, set to 10 by default.
 
-Examples for the syntax of the hex assembler, aswell as an example hex, is provided in [FILL THIS OUT].
+Examples for the syntax of the hex assembler, aswell as an example hex, is provided in the HexAssembler folder.
 
 ## Performance
 
