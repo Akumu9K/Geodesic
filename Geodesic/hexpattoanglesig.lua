@@ -59,6 +59,7 @@ end
 function patternresolver(pattern, recursion_check)
     if recursion_check == nil then recursion_check = 0 end
     --local matched_pattern = pattern_list[v]
+    pattern = trim(pattern)
     local matched_pattern = patkeymatcher(pattern)
     if matched_pattern == nil then
         local spechandleresult = specialhandlingfinder(pattern)
@@ -111,10 +112,11 @@ end
 
 function specialhandlingfinder(str) -- TODO: Put the special handlers in their own file when its time to handle inline lists
     local fallback_placeholder = {dir = "SOUTH_EAST", anglesig = "dwddwddwwawaaqddq", ishexpattern = true}
-    local f, e = nil, nil
-    if nonpatiotafinder(str) ~= nil then
-        return nonpatiotahandler(str)
+    local nonpatiota = nonpatiotafinder(str)
+    if nonpatiota ~= nil then
+        return nonpatiotahandler(nonpatiota)
     end
+    local f, e = nil, nil
     f, e = string.find(str, "Bookkeeper's Gambit:")
     if f ~= nil then
         local bookkeepers = trim(string.sub(str, e+1, -1))
@@ -223,11 +225,16 @@ end
 
 function nonpatiotafinder(str)
     str = trim(str)
-    return string.match(str,"%<.*%>")
+    return string.match(str,"%<(.*)%>")
 end
 
 function nonpatiotahandler(str)
     --error("Unsupported iota encountered in .hexpattern", 100)
+    str = string.match(str,"%<(.*)%>") or str
+    local pat_check = patternresolver(trim(str))
+    if pat_check ~= nil then
+        return pat_check
+    end
     return {dir = "EAST", anglesig = "", ishexpattern = true}
 end
 

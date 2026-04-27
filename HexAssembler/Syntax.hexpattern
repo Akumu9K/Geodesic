@@ -1,0 +1,51 @@
+<Inputs>:
+// Inputs are assumed to be there for the purposes of calling, but are not initialized.
+
+input example_input;
+
+<Constants>:
+// Constants are initialized onto the stack, and then called.
+
+constant example_constant : <iota here>;
+
+<Embeds>:
+// Embeds are unrolled
+
+embed example_embed : <iota here>;
+
+<Imports>:
+// Imports are initialized onto the stack, and then called.
+
+import example_import : <"folder\\folder\\folder\\somefunction.hexpattern">;
+
+<Includes>:
+// Includes are unrolled
+
+include example_include : <"folder\\folder\\folder\\somefunction.hexpattern">;
+
+<Macros>:
+// Macros are unrolled
+
+macro example_macro : [
+    // Code goes here.
+    // Same call and unroll functions work here aswell.
+];
+
+<Functions>:
+// Functions are initialized onto the stack, and then called.
+
+// i is number of inputs, o is number of outputs, rm is rm state, global or local.
+// The i and o does not matter for global rm (rm = g), but with local rm (rm = l), 
+// They are used to preserve the ravenmind after the function call.
+function example_function (i = 0, o = 0, rm = g) : [
+    // Code goes here.
+    // Same call and unroll functions work here aswell.
+];
+
+<MAIN>: // The presence of this is what tells the entrypoint to treat this as Hex Assembler code, 
+// Everything before this is initialized, everything after is treated like .hexpattern code
+// Every <something>: before this is used to label sections, and do not do anything
+
+// Code goes here.
+// This section can be written like any .hexpattern file
+// [name] will call or unroll the value of "name", while [name]() will also attempt to execute it.

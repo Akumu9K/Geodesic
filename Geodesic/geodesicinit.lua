@@ -1,6 +1,8 @@
 if host:isHost() then
 require("./UIsounds")
 
+require("./HexAssembler.textparser")
+
 require("./filemapper")
 
 require("./jsonpatternparser")

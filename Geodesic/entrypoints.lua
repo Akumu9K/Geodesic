@@ -11,6 +11,10 @@ function formatfinder(str)
     if success then
         return result, type
     end
+    -- HexAssembly
+    if string.find(str, "%<MAIN%>:") then
+        return hexpattoanglesig(hexassemble(str)), nil
+    end
     -- .hexpattern
     return hexpattoanglesig(str), nil
 end

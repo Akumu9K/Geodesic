@@ -1,0 +1,148 @@
+// This is the v4 of my mobility tool, rewritten in the Hex Assembly format, as part of my testing.
+// All <...> sections aside from <MAIN>: are there for labelling, and do not do anything.
+
+// The way the hex works is;
+// When you are on the standing or flying/swimming, you are impulsed, with seperate values for on the ground and in air
+// When you are crouching, if near the ground and in world bounds, you are given altiora, if otherwise, you are given levitation
+
+<Embeds>:
+
+embed flight_impulse_length : <Numerical Reflection: 10>;
+embed ground_impulse_length : <Numerical Reflection: 4>;
+
+embed ground_distance_check_length : <Numerical Reflection: 2>;
+
+embed levitation_time : <Numerical Reflection: 1>;
+
+embed upper_world_bound : <Numerical Reflection: 319.9>;
+embed lower_world_bound : <Numerical Reflection: -63.9>;
+
+<Macros>:
+
+macro if_else : [
+    Augur's Exaltation
+    Hermes' Gambit
+];
+
+macro pekhui_section : [
+    Mind's Reflection
+    Gulliver's Purification
+    Division Distillation
+];
+
+macro height : [
+    Mind's Reflection
+    Stadiometer's Purification
+    [pekhui_section]()
+];
+
+macro stand_condition : [
+    [height]()
+    Gemini Decomposition
+    Numerical Reflection: 1.7 // Standing vs Crouching
+    Maximus Distillation
+    Jester's Gambit
+    Numerical Reflection: 1 // Crawling/Flying vs Standing/Crouching
+    Minimus Distillation
+    Disjunction Distillation
+];
+
+macro optimized_launch : [
+    // Assume input ontop of stack
+    Mind's Reflection
+    Alidade's Purification
+    Jester's Gambit
+    
+    Gemini Decomposition
+    Huginn's Gambit
+    Gemini Gambit
+    Muninn's Reflection
+    Flock's Gambit
+    {
+        Mind's Reflection
+        Jester's Gambit
+        Impulse
+    }
+    Jester's Gambit
+    Thoth's Gambit
+    Bookkeeper's Gambit: v
+];
+
+macro world_bounds_condition : [
+    Mind's Reflection
+    Compass' Purification II
+    Vector Disintegration
+    Bookkeeper's Gambit: v-v
+    Gemini Decomposition
+    [upper_world_bound]()
+    Maximus Distillation
+    Jester's Gambit
+    [lower_world_bound]()
+    Minimus Distillation
+    Disjunction Distillation
+    Negation Purification
+];
+
+macro ground_location : [
+    Mind's Reflection
+    Compass' Purification II
+    Vector Reflection -Y
+    Archer's Distillation
+];
+
+macro ground_distance_condition : [
+    [ground_location]()
+    Gemini Decomposition
+    Nullary Reflection
+    Equality Distillation
+    {
+        Bookkeeper's Gambit: v
+        Numerical Reflection: 33
+    }
+    {
+        Mind's Reflection
+        Compass' Purification II
+        Subtractive Distillation
+        Length Purification
+    }
+    [if_else]()
+];
+
+<MAIN>:
+
+[stand_condition]()
+{
+    [height]()
+    Numerical Reflection: 1
+    Minimus Distillation
+
+    [flight_impulse_length]
+    [ground_impulse_length]
+    [if_else]()
+
+    [optimized_launch]()
+}
+{
+    [world_bounds_condition]()
+    {
+        [ground_distance_condition]()
+        [ground_distance_check_length]()
+        Minimus Distillation
+    }
+    {
+        False Reflection
+    }
+    [if_else]()
+
+    {
+        Mind's Reflection
+        Altiora
+    }
+    {
+        Mind's Reflection
+        [levitation_time]()
+        Blue Sun's Nadir
+    }
+    [if_else]()
+}
+[if_else]()

@@ -174,6 +174,8 @@ The entrypoints are essentially hex formats that the importer can handle. By def
 
 As with the endpoints, highly recommend looking into the Importation Pipeline to figure out how to implement new entrypoints.
 
+Currently facilitates the usage of the hex assembler
+
 ### Custom Icons:
 
 At the start of filemapper.lua, there is a table, named "folder_icons". This table can be used to give your folders specific icons, to make recognizing them ingame more easier. There is an example included.
@@ -189,6 +191,18 @@ This feature is currently a stub that does not do anything (Of note), mentioned 
 It merely parses the iotas it receives from mediatransports 2 send functions (One for you sending to your avatar, and the other for someone else sending to your avatar), and prints the result.
 
 As this feature only works with a single endpoint, I am not sure whether building a few more features ontop of it is worthwhile, but included nonetheless.
+
+### Hex Assembler:
+
+Currently a highly experimental, very unpolished feature, use with caution.
+
+The hex assembler is a very lightweight "compiler" for hexes that allows you to define functions, macros, imports, etc, in a .hexpattern file, and compile it at runtime.
+
+The calls of the assembler work by initializating the relevant values onto the stack at the start of the hex, and then call them through stack manipulation. This is meant to increase code readibility for the uncompiled code, aswell as allow for denser/larger hexes by being able to call repeated sections of code, rather than write them over and over again.
+
+The unrolled macros pose a risk of leading to infinite recursion if they refer to each other, or a macro refers to itself in itself, thus, on line 72 in textparser.lua, there is a macro depth limit variable, set to 10 by default.
+
+Examples for the syntax of the hex assembler, aswell as an example hex, is provided in [FILL THIS OUT].
 
 ## Performance
 
