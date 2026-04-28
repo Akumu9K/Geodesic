@@ -65,7 +65,6 @@ local function parsehextext(str) -- Thank you, hexcasting. Whoever made the rege
 end
 
 function hexdisplay(str)
-    str = string.gsub(str, " §5,§f{", " §5,§f\n{")
     str = string.gsub(str, "}§5,§f {", "}{") -- Section that removes commas between patterns, comment out if you want those
     local str_list = parsehextext(str)
     for i, v in ipairs(str_list) do
