@@ -221,7 +221,7 @@ function matrixhandler(buff)
         flat_table[#flat_table+1] = buff:readDouble()
     end
     local iota = {type = "matrix"}
-    iota["display"] = "[".."("..rows..","..columns..") | "
+    iota["display"] = "[".."("..rows..", "..columns..") | "
     for i = 1, rows, 1 do
         iota[#iota+1] = {}
         for j = 1, columns, 1 do
