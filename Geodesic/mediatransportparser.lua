@@ -141,7 +141,7 @@ iota_handlers = {
     [6] = patternhandler,
     [5] = doublehandler,
     [1] = stringhandler,
-    [80] = stringhandler, -- Text iotas have the same format as string iotas
+    [80] = texthandler,
     [64] = matrixhandler,
     [7] = vectorhandler,
     [255] = garbagehandler,
@@ -199,6 +199,19 @@ function stringhandler(buff)
     end
     local iota = {type = "string", value = str}
     iota["display"] = "§d\"" .. str .. "\"§f"
+    return iota
+end
+
+function texthandler(buff) -- Minor display difference from stringhandler(), text and string iotas share the same format
+    local length = buff:readInt()
+    local str = ""
+    for i = 1, length, 1 do
+        local char_num = buff:read()
+        local char = string.char(char_num)
+        str = str .. char
+    end
+    local iota = {type = "string", value = str}
+    iota["display"] = "§6“§f" .. str .. "§6”§f"
     return iota
 end
 
