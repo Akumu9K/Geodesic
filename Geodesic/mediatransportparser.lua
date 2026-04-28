@@ -3,8 +3,8 @@ if client.isModLoaded("mediatransport") then
 
 function server_packets.transport_received(data)
     local output = parseMT(data)
+    print("Self Transport Received")
     if output["display"] then
-        print("Self Transport Received")
         hexdisplay(output["display"])
     else
         printTable(output)
@@ -15,8 +15,8 @@ end
 
 function server_packets.transport_external_received(data)
     local output = parseMT(data)
+    print("External Transport Received")
     if output["display"] then
-        print("External Transport Received")
         hexdisplay(output["display"])
     else
         printTable(output)
@@ -24,6 +24,7 @@ function server_packets.transport_external_received(data)
     host:writeToLog(toJson(output))
     data:close()
 end
+
 
 end
 
