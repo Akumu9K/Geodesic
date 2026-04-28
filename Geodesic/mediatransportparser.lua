@@ -4,6 +4,7 @@ if client.isModLoaded("mediatransport") then
 function server_packets.transport_received(data)
     local output = parseMT(data)
     if output["display"] then
+        print("Self Transport Received")
         hexdisplay(output["display"])
     else
         printTable(output)
@@ -15,6 +16,7 @@ end
 function server_packets.transport_external_received(data)
     local output = parseMT(data)
     if output["display"] then
+        print("External Transport Received")
         hexdisplay(output["display"])
     else
         printTable(output)
@@ -63,12 +65,9 @@ local function parsehextext(str) -- Thank you, hexcasting. Whoever made the rege
 end
 
 function hexdisplay(str)
-    --str = string.gsub(str, "\"", "\"") --"\\\""
-    str = string.gsub(str, "}, \n", "}, ")
-    str = string.gsub(str, "}, {", "}{")
-    str = string.gsub(str, "], \n", "], ")
+    str = string.gsub(str, " §5,§f{", " §5,§f\n{")
+    str = string.gsub(str, "}§5,§f {", "}{") -- Section that removes commas between patterns, comment out if you want those
     local str_list = parsehextext(str)
-    print()
     for i, v in ipairs(str_list) do
         printJson(v)
     end
@@ -98,10 +97,10 @@ end
 local function listdisplay(list)
     local list_string = ""
     for i, v in ipairs(list) do
-        list_string = list_string .. (v["display"] or "N/A") .. ", \n"
+        list_string = list_string .. (v["display"] or "N/A") .. "§5,§f "
     end
-    list_string = string.gsub(list_string, ", \n$", "")
-    list_string = "[" .. list_string .. "]"
+    list_string = string.gsub(list_string, "§5,§f $", "")
+    list_string = "§5[§f" .. list_string .. "§5]§f"
     return list_string
 end
 
@@ -186,7 +185,7 @@ end
 function doublehandler(buff)
     local num = buff:readDouble()
     local iota = {type = "double", value = num}
-    iota["display"] = "" .. num
+    iota["display"] = "§a"..string.format("%.2f", num).."§f"
     return iota
 end
 
@@ -199,7 +198,7 @@ function stringhandler(buff)
         str = str .. char
     end
     local iota = {type = "string", value = str}
-    iota["display"] = "\"" .. str .. "\""
+    iota["display"] = "§d\"" .. str .. "\"§f"
     return iota
 end
 
@@ -208,7 +207,7 @@ function vectorhandler(buff)
     local y = buff:readDouble()
     local z = buff:readDouble()
     local iota = {type = "vector", x = x, y = y, z = z}
-    iota["display"] = "("..x..", "..y..", "..z..")"
+    iota["display"] = "§c("..x..", "..y..", "..z..")§f"
     return iota
 end
 
@@ -221,40 +220,40 @@ function matrixhandler(buff)
         flat_table[#flat_table+1] = buff:readDouble()
     end
     local iota = {type = "matrix"}
-    iota["display"] = "[".."("..rows..", "..columns..") | "
+    iota["display"] = "§b[".."("..rows..", "..columns..") | "
     for i = 1, rows, 1 do
         iota[#iota+1] = {}
         for j = 1, columns, 1 do
             iota[i][j] = flat_table[((i-1)*columns)+j]
-            iota["display"] = iota["display"] .. iota[i][j] .. ", "
+            iota["display"] = iota["display"].."§a"..string.format("%.2f", iota[i][j]).."§b, "
         end
         iota["display"] = string.gsub(iota["display"], ", $", "; ")
     end
-    iota["display"] = string.gsub(iota["display"], "; $", "]")
+    iota["display"] = string.gsub(iota["display"], "§b; $", "§b]§f")
     return iota
 end
 
 function garbagehandler(buff)
     local iota = {type = "garbage"}
-    iota["display"] = "Garbage"
+    iota["display"] = "§8§karimfexendrapuse§f§r"
     return iota
 end
 
 function nullhandler(buff)
     local iota = {type = "null"}
-    iota["display"] = "Null"
+    iota["display"] = "§7Null§f"
     return iota
 end
 
 function truehandler(buff)
     local iota = {type = "bool", value = true}
-    iota["display"] = "True"
+    iota["display"] = "§2True§f"
     return iota
 end
 
 function falsehandler(buff)
     local iota = {type = "bool", value = false}
-    iota["display"] = "False"
+    iota["display"] = "§4False§f"
     return iota
 end
 
