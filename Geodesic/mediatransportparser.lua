@@ -3,16 +3,75 @@ if client.isModLoaded("mediatransport") then
 
 function server_packets.transport_received(data)
     local output = parseMT(data)
-    printTable(output)
+    if output["display"] then
+        hexdisplay(output["display"])
+    else
+        printTable(output)
+    end
+    host:writeToLog(toJson(output))
     data:close()
 end
 
 function server_packets.transport_external_received(data)
     local output = parseMT(data)
-    printTable(output)
+    if output["display"] then
+        hexdisplay(output["display"])
+    else
+        printTable(output)
+    end
+    host:writeToLog(toJson(output))
     data:close()
 end
 
+end
+
+-- Pretty Print:
+
+local function parsehextext(str) -- Thank you, hexcasting. Whoever made the regex for the HexPattern[dir, anglesig] thing, for your safety, I hope you will never get to meet me.
+    local text_list = {}
+    local parser = "(.-)({.-:.-})(.*)"
+    local parsed_text = str
+    --local trail, hexpat, lead = "", "", ""
+    for i = 1, string.len(str), 1 do
+        local prev_lead = parsed_text
+        local trail, hexpat, lead = string.match(parsed_text, parser)
+        text_list[#text_list+1] = trail or ""
+        text_list[#text_list+1] = hexpat or ""
+        if (hexpat == nil) or (lead == nil) then
+            text_list[#text_list+1] = prev_lead or ""
+            break
+        end
+        parsed_text = lead
+    end
+
+    local index = 1
+    for i = 1, #text_list, 1 do
+        if text_list[index] == nil then
+            break
+        end
+        if text_list[index] == "" then
+            table.remove(text_list, index)
+        else
+            index = index + 1
+        end
+    end
+
+    if #text_list == 0 then
+        text_list[1] = str
+    end
+    return text_list
+end
+
+function hexdisplay(str)
+    --str = string.gsub(str, "\"", "\"") --"\\\""
+    str = string.gsub(str, "}, \n", "}, ")
+    str = string.gsub(str, "}, {", "}{")
+    str = string.gsub(str, "], \n", "], ")
+    local str_list = parsehextext(str)
+    print()
+    for i, v in ipairs(str_list) do
+        printJson(v)
+    end
 end
 
 -- Main Functions:
@@ -33,30 +92,41 @@ local function preparser(buff)
         local result = handler(buff)
         output[#output+1] = result
     end
-
     return output
 end
 
+local function listdisplay(list)
+    local list_string = ""
+    for i, v in ipairs(list) do
+        list_string = list_string .. (v["display"] or "N/A") .. ", \n"
+    end
+    list_string = string.gsub(list_string, ", \n$", "")
+    list_string = "[" .. list_string .. "]"
+    return list_string
+end
+
 local function listnester(list)
-    local output = {}
+    local stack = {}
     local iota_limit = 1024
-    local index = 1
+    local index = #list
     for i = 1, iota_limit, 1 do
         local iota = list[index]
         if iota == nil then
             break
         end
-        if list[index]["type"] == "list" then
-            local length = list[index]["length"]
-            local handled_list = table.pack(table.unpack(list, index+1, index+length))
-            iota = listnester(handled_list)
-            iota["type"], iota["length"] = "list", length
-            index = index + length
+        if iota["type"] == "list" then
+            local length = iota["length"]
+            iota = table.pack(table.unpack(stack, 1, length))
+            for i = 1, length, 1 do
+                table.remove(stack, 1)
+            end
+            iota["type"], iota["length"], iota["n"] = "list", length, nil
+            iota["display"] = listdisplay(iota)
         end
-        output[#output+1] = iota
-        index = index + 1
+        table.insert(stack, 1, iota)
+        index = index - 1
     end
-    return output
+    return stack
 end
 
 function parseMT(buff)
@@ -89,6 +159,7 @@ end
 function listhandler(buff)
     local length = buff:readInt()
     local iota = {type = "list", length = length}
+    iota["display"] = "List Display Uninitialized"
     return iota
 end
 
@@ -107,12 +178,15 @@ function patternhandler(buff)
     end
 
     local iota = {type = "pattern", dir = dir, anglesig = anglesig_str}
+    iota["display"] = string.format("{%s:%s}", dir, anglesig_str)
+    --iota["display"] = ""
     return iota
 end
 
 function doublehandler(buff)
     local num = buff:readDouble()
     local iota = {type = "double", value = num}
+    iota["display"] = "" .. num
     return iota
 end
 
@@ -125,6 +199,7 @@ function stringhandler(buff)
         str = str .. char
     end
     local iota = {type = "string", value = str}
+    iota["display"] = "\"" .. str .. "\""
     return iota
 end
 
@@ -133,6 +208,7 @@ function vectorhandler(buff)
     local y = buff:readDouble()
     local z = buff:readDouble()
     local iota = {type = "vector", x = x, y = y, z = z}
+    iota["display"] = "("..x..", "..y..", "..z..")"
     return iota
 end
 
@@ -145,32 +221,40 @@ function matrixhandler(buff)
         flat_table[#flat_table+1] = buff:readDouble()
     end
     local iota = {type = "matrix"}
+    iota["display"] = "[".."("..columns..","..rows..") | "
     for i = 1, rows, 1 do
         iota[#iota+1] = {}
         for j = 1, columns, 1 do
             iota[i][j] = flat_table[((i-1)*columns)+j]
+            iota["display"] = iota["display"] .. iota[i][j] .. ", "
         end
+        iota["display"] = string.gsub(iota["display"], ", $", "; ")
     end
+    iota["display"] = string.gsub(iota["display"], "; $", "]")
     return iota
 end
 
 function garbagehandler(buff)
     local iota = {type = "garbage"}
+    iota["display"] = "Garbage"
     return iota
 end
 
 function nullhandler(buff)
     local iota = {type = "null"}
+    iota["display"] = "Null"
     return iota
 end
 
 function truehandler(buff)
     local iota = {type = "bool", value = true}
+    iota["display"] = "True"
     return iota
 end
 
 function falsehandler(buff)
     local iota = {type = "bool", value = false}
+    iota["display"] = "False"
     return iota
 end
 
@@ -191,6 +275,7 @@ function queryconfighandler(buff)
         power_regen_rate = power_regen_rate,
         inter_cost = inter_cost,
     }
+    result["display"] = nil
     return result
 end
 
