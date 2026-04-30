@@ -51,7 +51,7 @@ Finally, you need to include a folder, which contains your hex files, which gets
 
 Next is configuring some variables in the lua files to get this thing to a minimally working state, enough to run with no errors.
 
-In filemapper.lua, on line 124 and 125 are two variables, named "Hex_repository", and "file_system_location".
+In filemapper.lua, on line 123 and 124 are two variables, named "Hex_repository", and "file_system_location".
 Hex_repository's value should be set to the name of the folder in figura/data that contains your hex files, the one you just put in there.
 file_system_location's value should be set to the action wheel page, in which the relevant geodesic pages get created.
 
@@ -63,7 +63,7 @@ Fill in all of these with the relevant values.
 
 Configure the perworldconfig.json
 
-In perworldconfig.json, each server or world has a config field, and in this field are 5 variables. These variables have defaults in hexporterfigura.lua, from line 85 to line 89, and their functionalities are explained there too, but I will put the same explanations here aswell to make this easier.
+In perworldconfig.json, each server or world has a config field, and in this field are 5 variables. These variables have defaults in hexporterfigura.lua, from line 33 to line 37, and their functionalities are explained there too, but I will put the same explanations here aswell to make this easier.
 
 - max_part: Max partitions allowed, somewhat useless
 - part_size: Max size of an individual partition 
@@ -77,7 +77,7 @@ Thus, it is crucial to configure the hexporter for the importation method being 
 
 Next, we have to configure the endpoint, which relates to perworldendpoints.lua, this script is what allows us to have different importation methods for each server/world. Simply put the name of the endpoint you want to use in the server/worlds "endpoint" field.
 
-(A few notes for moreiotas, you need to enable figuras chatting settings, to allow the importer to send chat messages for you to be able to import with it. Aside from that, this importer assumes you will be using sifters gambit, so on perworldendpoints.lua, line 71, there is a sifters gambit prefix. Change this to whatever sifters gambit prefix you use, or make it an empty string if you do not use sifters)
+(A few notes for moreiotas, you need to enable figuras chatting settings, to allow the importer to send chat messages for you to be able to import with it. Aside from that, this importer assumes you will be using sifters gambit, so on perworldendpoints.lua, line 119, there is a sifters gambit prefix. Change this to whatever sifters gambit prefix you use, or make it an empty string if you do not use sifters)
 
 Finally, configuring the patterns. The template has an example for this, simply fill it out and put it in the patterns field of your server/world. This can be used to replace non per world patterns too, as it has no check for that. Feel free to use it for this purpose if you wish, although I would not recommend.
 
@@ -145,7 +145,7 @@ Continuing the previous section is the next 2 tables, which are used to define f
 
 "external_function_list" is meant for calling seperate .hexpattern files as functions. These files are processed the same way as all others, and then the result is put into the hex at the spot of the function call, somewhat akin to flattening a list. Once again, there is an example included, the field "isexternalfunction" needs to be true, and the location of the file needs to go into "functionlocation", starting from the figura/data folder but not including it.
 
-For the external functions, the possibility of infinite recursive calls exists, which would crash your game (Well, freeze it indefinitely). To stop this from happening, a recursion limiter is implemented in hexpattoanglesig.lua, at line 331, it is 1 by default. Feel free to change this to allow for any depth of recursion wanted.
+For the external functions, the possibility of infinite recursive calls exists, which would crash your game (Well, freeze it indefinitely). To stop this from happening, a recursion limiter is implemented in hexpattoanglesig.lua, at line 104, it is 1 by default. Feel free to change this to allow for any depth of recursion wanted.
 
 ### Custom Syntax:
 
@@ -200,7 +200,7 @@ The hex assembler is a very lightweight "compiler" for hexes that allows you to 
 
 The calls of the assembler work by initializating the relevant values onto the stack at the start of the hex, and then call them through stack manipulation. This is meant to increase code readibility for the uncompiled code, aswell as allow for denser/larger hexes by being able to call repeated sections of code, rather than write them over and over again.
 
-The unrolled macros pose a risk of leading to infinite recursion if they refer to each other, or a macro refers to itself in itself, thus, on line 72 in textparser.lua, there is a macro depth limit variable, set to 10 by default.
+The unrolled macros pose a risk of leading to infinite recursion if they refer to each other, or a macro refers to itself in itself, thus, on line 82 in textparser.lua, there is a macro depth limit variable, set to 10 by default.
 
 Examples for the syntax of the hex assembler, aswell as an example hex, is provided in the HexAssembler folder.
 

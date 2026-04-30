@@ -1,8 +1,31 @@
+-- Main Functions:
+
+function formatfinder(str)
+    -- Hexparty Json
+    local success, result, type = pcall(hexpartyjsonhandler, str)
+    if success then
+        return result, type
+    end
+    -- Hextweaks Lua Table
+    local success, result, type = pcall(hextweakstablehandler, str)
+    if success then
+        return result, type
+    end
+    -- HexAssembly
+    local type = "HexAssembly"
+    if string.find(str, "%<MAIN%>:") then
+        return hexpattoanglesig(hexassemble(str)), type
+    end
+    -- .hexpattern
+    local type = ".hexpattern"
+    return hexpattoanglesig(str), nil
+end
+
 -- Format Handlers:
 
 -- HexParty Json:
 
-local function hexpartyjsonhandler(str)
+function hexpartyjsonhandler(str)
     local format_type = "Hexparty Json"
     local result = {}
     local placeholder = {dir = "EAST", anglesig = "", ishexpattern = true}
@@ -32,7 +55,7 @@ end
 
 -- Hex Tweaks Table:
 
-local function hextweakstablehandler(str)
+function hextweakstablehandler(str)
     local format_type = "Hex Tweaks Table"
     local result = {}
     local placeholder = {dir = "EAST", anglesig = "", ishexpattern = true}
@@ -56,27 +79,4 @@ local function hextweakstablehandler(str)
         end
     end
     return result, format_type
-end
-
--- Main Functions:
-
-function formatfinder(str)
-    -- Hexparty Json
-    local success, result, type = pcall(hexpartyjsonhandler, str)
-    if success then
-        return result, type
-    end
-    -- Hextweaks Lua Table
-    local success, result, type = pcall(hextweakstablehandler, str)
-    if success then
-        return result, type
-    end
-    -- HexAssembly
-    local type = "HexAssembly"
-    if string.find(str, "%<MAIN%>:") then
-        return hexpattoanglesig(hexassemble(str)), type
-    end
-    -- .hexpattern
-    local type = ".hexpattern"
-    return hexpattoanglesig(str), nil
 end

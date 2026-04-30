@@ -117,7 +117,6 @@ function reader(str,filename)
     print(filename)
 end
 
-
 -- Init:
 
 file_system = action_wheel:newPage()

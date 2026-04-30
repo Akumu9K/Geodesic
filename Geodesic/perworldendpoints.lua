@@ -1,43 +1,33 @@
--- Utility Functions:
+-- Endpoint Init:
 
-function singlesplitter(str)
-    local string_table = {}
-    local limit = 10 --Because lua has a limit to how many matches it can get from a pattern
-    for i = 1, math.ceil(string.len(str)/limit), 1 do
-        local string_section = string.sub(str, ((i-1)*limit)+1, i*limit)
-        local parts = table.pack( string_section:match( (string_section:gsub(".", "(.)")) ) ) --What the fuck
-        for _, v in ipairs(parts) do
-            string_table[#string_table+1] = v
-        end
-    end
-    return string_table
+Endpoint_Table = {}
+
+function events.entity_init()
+
+local Mediatransport = { -- The default, thus all the relevant functions are defined as themselves
+    sender = buffsender,
+    partitioner = statpartitioner,
+}
+Endpoint_Table["Mediatransport"] = Mediatransport
+
+local Moreiotas = { -- Moreiotas + Hexical
+    sender = textsender,
+    partitioner = dynpartitioner,
+}
+Endpoint_Table["Moreiotas"] = Moreiotas
+
+local Hexparse = { -- To be made, just here as a reminder to make it
+
+}
+Endpoint_Table["Hexparse"] = Hexparse
+
 end
-
--- Constants:
-
-local dir_convert = {
-    NORTH_EAST = 0,
-    EAST = 1,
-    SOUTH_EAST = 2,
-    SOUTH_WEST = 3,
-    WEST = 4,
-    NORTH_WEST = 5,
-}
-
-local angle_convert = {
-    w = 0,
-    e = 1,
-    d = 2,
-    s = 3,
-    a = 4,
-    q = 5,
-}
 
 -- Endpoints:
 
 -- Mediatransport:
 
-local function statpartitioner(table, partition_size, max_partition)
+function statpartitioner(table, partition_size, max_partition)
     local max_partitions = max_partition or 1024
     local partition_length = partition_size or 250
     local partition_table = {}
@@ -59,7 +49,15 @@ local function statpartitioner(table, partition_size, max_partition)
     return partition_table
 end
 
-local function hexpatserializer(list)
+function buffsender(part)
+    local buffer = hexpatserializer(part)
+    local length = buffer:getLength()
+    server_packets:sendPacket("transport_send", buffer)
+    buffer:close()
+    return length
+end
+
+function hexpatserializer(list)
     --printTable(list)
     local buffer = data:createBuffer()
     local length = #list
@@ -88,17 +86,9 @@ local function hexpatserializer(list)
     return buffer
 end
 
-local function buffsender(part)
-    local buffer = hexpatserializer(part)
-    local length = buffer:getLength()
-    server_packets:sendPacket("transport_send", buffer)
-    buffer:close()
-    return length
-end
-
 -- Moreiotas:
 
-local function dynpartitioner(table, partition_size, max_partition)
+function dynpartitioner(table, partition_size, max_partition)
     local max_partitions = max_partition or 1024
     local part_size_byte = partition_size or 254
     local partition_table = {}
@@ -125,7 +115,7 @@ local function dynpartitioner(table, partition_size, max_partition)
     return partition_table
 end
 
-local function textsender(part)
+function textsender(part)
     local sifters_prefix = "ß"
     local chatmsg = sifters_prefix
     local length = 0
@@ -140,26 +130,40 @@ local function textsender(part)
     return length
 end
 
--- Endpoint Init:
+-- Constants:
 
-Endpoint_Table = {}
-
-local Mediatransport = { -- The default, thus all the relevant functions are defined as themselves
-    sender = buffsender,
-    partitioner = statpartitioner,
+dir_convert = {
+    NORTH_EAST = 0,
+    EAST = 1,
+    SOUTH_EAST = 2,
+    SOUTH_WEST = 3,
+    WEST = 4,
+    NORTH_WEST = 5,
 }
-Endpoint_Table["Mediatransport"] = Mediatransport
 
-local Moreiotas = { -- Moreiotas + Hexical
-    sender = textsender,
-    partitioner = dynpartitioner,
+angle_convert = {
+    w = 0,
+    e = 1,
+    d = 2,
+    s = 3,
+    a = 4,
+    q = 5,
 }
-Endpoint_Table["Moreiotas"] = Moreiotas
 
-local Hexparse = { -- To be made, just here as a reminder to make it
+-- Utility Functions:
 
-}
-Endpoint_Table["Hexparse"] = Hexparse
+function singlesplitter(str)
+    local string_table = {}
+    local limit = 10 --Because lua has a limit to how many matches it can get from a pattern
+    for i = 1, math.ceil(string.len(str)/limit), 1 do
+        local string_section = string.sub(str, ((i-1)*limit)+1, i*limit)
+        local parts = table.pack( string_section:match( (string_section:gsub(".", "(.)")) ) ) --What the fuck
+        for _, v in ipairs(parts) do
+            string_table[#string_table+1] = v
+        end
+    end
+    return string_table
+end
 
 -- Action Wheel:
 
