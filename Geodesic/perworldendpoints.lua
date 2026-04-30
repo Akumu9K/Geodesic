@@ -1,8 +1,6 @@
--- Init:
+-- Endpoint Init:
 
 Endpoint_Table = {}
-
--- Endpoints:
 
 function events.entity_init()
 
@@ -25,7 +23,7 @@ Endpoint_Table["Hexparse"] = Hexparse
 
 end
 
--- Endpoint Functions:
+-- Endpoints:
 
 -- Mediatransport:
 
@@ -132,21 +130,6 @@ function textsender(part)
     return length
 end
 
--- Utility Functions:
-
-function singlesplitter(str)
-    local string_table = {}
-    local limit = 10 --Because lua has a weird thing where gsub fails to work above a certain size.
-    for i = 1, math.ceil(string.len(str)/limit), 1 do
-        local string_section = string.sub(str, ((i-1)*limit)+1, i*limit)
-        local parts = table.pack( string_section:match( (string_section:gsub(".", "(.)")) ) ) --What the fuck
-        for _, v in ipairs(parts) do
-            string_table[#string_table+1] = v
-        end
-    end
-    return string_table
-end
-
 -- Constants:
 
 dir_convert = {
@@ -166,6 +149,21 @@ angle_convert = {
     a = 4,
     q = 5,
 }
+
+-- Utility Functions:
+
+function singlesplitter(str)
+    local string_table = {}
+    local limit = 10 --Because lua has a limit to how many matches it can get from a pattern
+    for i = 1, math.ceil(string.len(str)/limit), 1 do
+        local string_section = string.sub(str, ((i-1)*limit)+1, i*limit)
+        local parts = table.pack( string_section:match( (string_section:gsub(".", "(.)")) ) ) --What the fuck
+        for _, v in ipairs(parts) do
+            string_table[#string_table+1] = v
+        end
+    end
+    return string_table
+end
 
 -- Action Wheel:
 

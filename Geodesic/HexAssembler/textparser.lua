@@ -32,10 +32,13 @@ local rm_saver_end = "" ..
     "Huginn's Gambit \r\n" ..
     "Flock's Disintegration \r\n"
 
-local macro_embed = "" ..
+local macro_embed_plain = "" ..
     "Introspection \r\n" ..
     "%s \r\n" ..
     "Retrospection \r\n"
+
+local macro_embed_call = "" ..
+    "%s \r\n"
 
 local iota_embed = "" ..
     "Introspection \r\n" ..
@@ -49,6 +52,13 @@ local call_init_value = "" ..
     "Subtractive Distillation \r\n" ..
     "Fisherman's Gambit II \r\n"
 
+local execute_init_value = "" ..
+    "Flock's Reflection \r\n" ..
+    "Numerical Reflection: %d \r\n" ..
+    "Subtractive Distillation \r\n" ..
+    "Fisherman's Gambit II \r\n" ..
+    "Hermes' Gambit \r\n"
+
 local spacer = "" ..
     "\r\n" ..
     "%s" ..
@@ -58,11 +68,11 @@ local spacer = "" ..
 
 local function replacecalls(str, call_table, unroll_table)
     for i, v in ipairs(call_table) do
-        str = string.gsub(str, "%[" .. v["name"] .. "%]%(%)", string.format(spacer, string.format(call_init_value, i) .. "\r\nHermes' Gambit"))
+        str = string.gsub(str, "%[" .. v["name"] .. "%]%(%)", string.format(spacer, string.format(execute_init_value, i)))
         str = string.gsub(str, "%[" .. v["name"] .. "%]", string.format(spacer, string.format(call_init_value, i)))
     end
     for i, v in pairs(unroll_table) do
-        str = string.gsub(str, "%[" .. v["name"] .. "%]%(%)", string.format(spacer, string.format(v["embed_type"], v["value"]) .. "\r\nHermes' Gambit"))
+        str = string.gsub(str, "%[" .. v["name"] .. "%]%(%)", string.format(spacer, string.format(v["call_embed_type"], v["value"]) )) --.. "\r\nHermes' Gambit"
         str = string.gsub(str, "%[" .. v["name"] .. "%]", string.format(spacer, string.format(v["embed_type"], v["value"])))
     end
     return str
@@ -130,7 +140,8 @@ local function inittables(str)
             type = "embed", 
             name = name, 
             value = constant,
-            embed_type = iota_embed
+            embed_type = iota_embed,
+            call_embed_type = macro_embed_call
         }
         end
     end
@@ -141,7 +152,8 @@ local function inittables(str)
             type = "include", 
             name = name, 
             value = unrolled_function,
-            embed_type = macro_embed
+            embed_type = macro_embed_plain,
+            call_embed_type = macro_embed_call
         }
         end
     end
@@ -151,7 +163,8 @@ local function inittables(str)
             type = "macro", 
             name = name, 
             value = macro,
-            embed_type = macro_embed
+            embed_type = macro_embed_plain,
+            call_embed_type = macro_embed_call
         }
         end
     end
@@ -174,7 +187,7 @@ local function parseinit(call_table)
             end
             init = init .. func
         elseif v["type"] == "import" then
-            init = init .. string.format(macro_embed, v["value"])
+            init = init .. string.format(macro_embed_plain, v["value"])
         else
             init = init .. string.format(iota_embed, v["value"])
         end

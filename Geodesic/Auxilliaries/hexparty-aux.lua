@@ -47,14 +47,14 @@ function parseresponsedata(data, headers)
     return response_string
 end
 
-function hexpartyrequestwrapper(path)
+local function hexpartyrequestwrapper(path)
     local data, headers, code = request(path, "GET", {}, nil)
     local result = parseresponsedata(data, headers)
     data:close()
     return result
 end
 
-function hexpartymap(page, path)
+local function hexpartymap(page, path)
     local crawled_data = parseJson(hexpartyrequestwrapper(baseurl .. path .. "?ls")) -- .. "?ls"
     local dirs, files = crawled_data["dirs"], crawled_data["files"]
     local prev_page = page
@@ -172,6 +172,7 @@ local hexparty_interop_goto = hexparty_location:newAction()
         action_wheel:setPage(hexparty_start_page)
         pageclick()
     end)
+
 local return_action = hexparty_start_page:newAction()
     :title("Go Back")
     :item("firework_rocket")

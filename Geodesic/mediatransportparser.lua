@@ -1,4 +1,5 @@
 -- Init:
+
 if client.isModLoaded("mediatransport") then
 
 function server_packets.transport_received(data)
@@ -24,7 +25,6 @@ function server_packets.transport_external_received(data)
     host:writeToLog(toJson(output))
     data:close()
 end
-
 
 end
 
@@ -66,11 +66,22 @@ local function parsehextext(str) -- Thank you, hexcasting. Whoever made the rege
 end
 
 function hexdisplay(str)
+    --str = string.gsub(str, "§5,§f{", " §5,§f\n{")
     str = string.gsub(str, "}§5,§f {", "}{") -- Section that removes commas between patterns, comment out if you want those
     local str_list = parsehextext(str)
     for i, v in ipairs(str_list) do
         printJson(v)
     end
+end
+
+local function listdisplay(list)
+    local list_string = ""
+    for i, v in ipairs(list) do
+        list_string = list_string .. (v["display"] or "N/A") .. "§5,§f "
+    end
+    list_string = string.gsub(list_string, "§5,§f $", "")
+    list_string = "§5[§f" .. list_string .. "§5]§f"
+    return list_string
 end
 
 -- Main Functions:
@@ -85,23 +96,13 @@ local function preparser(buff)
         local handler = iota_handlers[iota_code]
         if handler == nil then
             -- No handler found section here
-            print("No handler found")
+            error("No handler found")
             break
         end
         local result = handler(buff)
         output[#output+1] = result
     end
     return output
-end
-
-local function listdisplay(list)
-    local list_string = ""
-    for i, v in ipairs(list) do
-        list_string = list_string .. (v["display"] or "N/A") .. "§5,§f "
-    end
-    list_string = string.gsub(list_string, "§5,§f $", "")
-    list_string = "§5[§f" .. list_string .. "§5]§f"
-    return list_string
 end
 
 local function listnester(list)

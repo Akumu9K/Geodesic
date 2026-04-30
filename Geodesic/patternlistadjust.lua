@@ -6,10 +6,10 @@ local touchup_list = {
 
 -- Init:
 
-function events.entity_init()
+--function events.entity_init()
 
 for k, v in pairs(touchup_list) do
     pattern_list[k] = v
 end
 
-end
+--end

@@ -23,7 +23,7 @@ local external_function_list = {
 
 function events.entity_init()
 
-definition_list = listmerger(custom_pattern_list, replacement_pattern_list, inline_function_list, external_function_list)
+local definition_list = listmerger(custom_pattern_list, replacement_pattern_list, inline_function_list, external_function_list)
 
 for k, v in pairs(definition_list) do
     pattern_list[k] = v

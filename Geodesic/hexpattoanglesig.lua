@@ -23,6 +23,7 @@ function hexpattrimmed(str)
     -- Compess down so no more empty spaces remain
     str = tablecompresser(str)
     -- Replace intro and retro with the relevant names
+    --[[
     for k, v in pairs(str) do
         if v == "{" then
             str[k] = "Introspection"
@@ -30,6 +31,7 @@ function hexpattrimmed(str)
             str[k] = "Retrospection"
         end
     end
+    ]]
     -- Trim once more
     for k, v in pairs(str) do
         str[k] = trim(v)
@@ -108,11 +110,11 @@ function hexpattoanglesig(hexpattern, recursion_check)
     return anglesig_tabled
 end
 
--- Special Handler Functions:
+-- Special Handlers:
 
 function specialhandlingfinder(str) -- TODO: Put the special handlers in their own file when its time to handle inline lists
     local fallback_placeholder = {dir = "SOUTH_EAST", anglesig = "dwddwddwwawaaqddq", ishexpattern = true}
-    local nonpatiota = nonpatiotafinder(str)
+    local nonpatiota = string.match(trim(str),"%<(.*)%>")
     if nonpatiota ~= nil then
         return nonpatiotahandler(nonpatiota)
     end
@@ -138,6 +140,11 @@ function specialhandlingfinder(str) -- TODO: Put the special handlers in their o
     if f ~= nil then
         return considerationhandler(trim(string.sub(str, e+1, -1)))
     end
+    --[[
+    if placeholderfinder(str) ~= nil then
+        return placeholdermaker(str)
+    end
+    ]]
     return nil
 end
 
@@ -223,11 +230,6 @@ function considerationhandler(pattern)
     return result
 end
 
-function nonpatiotafinder(str)
-    str = trim(str)
-    return string.match(str,"%<(.*)%>")
-end
-
 function nonpatiotahandler(str)
     --error("Unsupported iota encountered in .hexpattern", 100)
     str = string.match(str,"%<(.*)%>") or str
@@ -238,11 +240,37 @@ function nonpatiotahandler(str)
     return {dir = "EAST", anglesig = "", ishexpattern = true}
 end
 
+-- Deprecated:
+--[[
+local function nonpatiotafinder(str)
+    str = trim(str)
+    return string.match(str,"%<(.*)%>")
+end
+--]]
+
+--[[
+function placeholderfinder(str)
+    str = trim(str)
+    return string.match(str,"%(.*%)")
+end
+
+function placeholdermaker(str)
+    local f = string.find(str, "(Empty)")
+    f = f or string.find(str, "(EMPTY)")
+    f = f or string.find(str, "(empty)")
+    if f ~= nil then
+       return nil
+    else
+        return {dir = "EAST", anglesig = "", ishexpattern = true}
+    end
+end
+--]]
+
 -- Utility Functions:
 
 function stringsplitter(str, splitter)
     local string_list = {}
-    for i = 1, 500, 1 do
+    for i = 1, 2000, 1 do
         local split_start, split_end = string.find(str, splitter)
         if split_start ~= nil then
             string_list[#string_list + 1] = string.sub(str, 1, (split_start - 1))
@@ -282,17 +310,6 @@ function trim(s) -- What the fuck is this thing. Stack overflow magic istg
     return s:match( "^%s*(.-)%s*$" )
 end
 
-function floattobinary(number)
-    local exponent = math.floor(math.log(number,2)+1)
-    local _, frac = math.modf(number/1)
-    for i = 1, 200, 1 do
-        if not (frac ~= 0) then break end
-        number = number * 2
-        _, frac = math.modf(number/1)
-    end
-    return inttobinary(number), exponent
-end
-
 function inttobinary(int)
     int = math.floor(int)
     local number = ""
@@ -304,8 +321,45 @@ function inttobinary(int)
     return number
 end
 
+function floattobinary(number)
+    local exponent = math.floor(math.log(number,2)+1)
+    local _, frac = math.modf(number/1)
+    for i = 1, 200, 1 do
+        if not (frac ~= 0) then break end
+        number = number * 2
+        _, frac = math.modf(number/1)
+    end
+    return inttobinary(number), exponent
+end
+
 function boolcoerce(value)
     return not not value
+end
+
+-- Experimental:
+
+local function variadicstringsplitter(str, ...)
+    local splitters = {...}
+    if #splitters == 0 then
+        return {str}
+    end
+    local split_strings = stringsplitter(str, splitters[1])
+    local output = {}
+    for i, v in ipairs(split_strings) do
+        local split_further = variadicstringsplitter(str, table.unpack(splitters, 2, #splitters))
+        for l, k in ipairs(split_further) do
+            output[#output+1] = k
+        end
+    end
+    return output
+end
+
+local function variadicstringsplitter2(str, ...)
+    local splitter_list = {...}
+    local split_nums = {}
+    for k, v in pairs(splitter_list) do
+        
+    end
 end
 
 -- Storage:

@@ -12,14 +12,18 @@ function formatfinder(str)
         return result, type
     end
     -- HexAssembly
+    local type = "HexAssembly"
     if string.find(str, "%<MAIN%>:") then
-        return hexpattoanglesig(hexassemble(str)), nil
+        return hexpattoanglesig(hexassemble(str)), type
     end
     -- .hexpattern
+    local type = ".hexpattern"
     return hexpattoanglesig(str), nil
 end
 
 -- Format Handlers:
+
+-- HexParty Json:
 
 function hexpartyjsonhandler(str)
     local format_type = "Hexparty Json"
@@ -35,7 +39,7 @@ function hexpartyjsonhandler(str)
         error("Format is not hexparty json")
         return
     end
-
+    
     for i, v in ipairs(table) do
         if type(v) ~= "table" then
             result[#result+1] = placeholder
@@ -46,7 +50,6 @@ function hexpartyjsonhandler(str)
             result[#result+1] = pattern
         end
     end
-
     return result, format_type
 end
 
