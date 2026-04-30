@@ -96,7 +96,7 @@ local function preparser(buff)
         local handler = iota_handlers[iota_code]
         if handler == nil then
             -- No handler found section here
-            print("No handler found")
+            error("No handler found")
             break
         end
         local result = handler(buff)
@@ -135,6 +135,8 @@ end
 
 -- Handler Registry:
 
+function events.entity_init()
+
 iota_handlers = {
     [8] = listhandler,
     [6] = patternhandler,
@@ -149,6 +151,8 @@ iota_handlers = {
     [3] = falsehandler,
     [254] = queryconfighandler,
 }
+
+end
 
 -- Handlers:
 
