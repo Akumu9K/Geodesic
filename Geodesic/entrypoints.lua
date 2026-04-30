@@ -1,29 +1,8 @@
--- Main Functions:
-
-function formatfinder(str)
-    -- Hexparty Json
-    local success, result, type = pcall(hexpartyjsonhandler, str)
-    if success then
-        return result, type
-    end
-    -- Hextweaks Lua Table
-    local success, result, type = pcall(hextweakstablehandler, str)
-    if success then
-        return result, type
-    end
-    -- HexAssembly
-    local type = "HexAssembly"
-    if string.find(str, "%<MAIN%>:") then
-        return hexpattoanglesig(hexassemble(str)), type
-    end
-    -- .hexpattern
-    local type = ".hexpattern"
-    return hexpattoanglesig(str), nil
-end
-
 -- Format Handlers:
 
-function hexpartyjsonhandler(str)
+-- HexParty Json:
+
+local function hexpartyjsonhandler(str)
     local format_type = "Hexparty Json"
     local result = {}
     local placeholder = {dir = "EAST", anglesig = "", ishexpattern = true}
@@ -37,7 +16,7 @@ function hexpartyjsonhandler(str)
         error("Format is not hexparty json")
         return
     end
-
+    
     for i, v in ipairs(table) do
         if type(v) ~= "table" then
             result[#result+1] = placeholder
@@ -48,13 +27,12 @@ function hexpartyjsonhandler(str)
             result[#result+1] = pattern
         end
     end
-
     return result, format_type
 end
 
 -- Hex Tweaks Table:
 
-function hextweakstablehandler(str)
+local function hextweakstablehandler(str)
     local format_type = "Hex Tweaks Table"
     local result = {}
     local placeholder = {dir = "EAST", anglesig = "", ishexpattern = true}
@@ -78,4 +56,27 @@ function hextweakstablehandler(str)
         end
     end
     return result, format_type
+end
+
+-- Main Functions:
+
+function formatfinder(str)
+    -- Hexparty Json
+    local success, result, type = pcall(hexpartyjsonhandler, str)
+    if success then
+        return result, type
+    end
+    -- Hextweaks Lua Table
+    local success, result, type = pcall(hextweakstablehandler, str)
+    if success then
+        return result, type
+    end
+    -- HexAssembly
+    local type = "HexAssembly"
+    if string.find(str, "%<MAIN%>:") then
+        return hexpattoanglesig(hexassemble(str)), type
+    end
+    -- .hexpattern
+    local type = ".hexpattern"
+    return hexpattoanglesig(str), nil
 end
