@@ -45,14 +45,14 @@ patternsbig.json is a huge json of hexcasting patterns (obtained from [here](htt
 
 perworldconfig.json includes everything relevant to configuring the importer for each world/server. It has a template, and then defaults for servers and singleplayer worlds. Guides later on will go deeper into configuring this, but for now just include it.
 
-Finally, you need to include a folder, which contains your .hexpattern files, which gets read from to import them.
+Finally, you need to include a folder, which contains your hex files, which gets read from to import them.
 
 ### Step 3:
 
 Next is configuring some variables in the lua files to get this thing to a minimally working state, enough to run with no errors.
 
-In filemapper.lua, on line 119 and 120 are two variables, named "Hex_repository", and "file_system_location".
-Hex_repository's value should be set to the name of the folder in figura/data that contains your .hexpattern files, the one you just put in there.
+In filemapper.lua, on line 124 and 125 are two variables, named "Hex_repository", and "file_system_location".
+Hex_repository's value should be set to the name of the folder in figura/data that contains your hex files, the one you just put in there.
 file_system_location's value should be set to the action wheel page, in which the relevant geodesic pages get created.
 
 In jsonpatternparser.lua, on line 3 is a local variable, "patterns_json". By default it is set to the patternsbig.json, the file we just put in the previous step, HOWEVER, if you have changed the name of this file, or are using a custom / different file, update this variable as necessary.
@@ -115,7 +115,7 @@ Right clicking a file instead attempts to read it, printing the raw text result 
 
 ### The Auxilliaries:
 
-You probably noticed that, aside from the main scripts of the importer, there is 3 more in the Auxilliaries folder. These serve to provide additional "inputs" to the hexporter, and allow you to pull .hexpattern files not just from your computer, but from the internet aswell.
+You probably noticed that, aside from the main scripts of the importer, there is 3 more in the Auxilliaries folder. These serve to provide additional "inputs" to the hexporter, and allow you to pull hex files not just from your computer, but from the internet aswell.
 
 Using these requires enabling the networking settings of figura. 
 
@@ -145,7 +145,7 @@ Continuing the previous section is the next 2 tables, which are used to define f
 
 "external_function_list" is meant for calling seperate .hexpattern files as functions. These files are processed the same way as all others, and then the result is put into the hex at the spot of the function call, somewhat akin to flattening a list. Once again, there is an example included, the field "isexternalfunction" needs to be true, and the location of the file needs to go into "functionlocation", starting from the figura/data folder but not including it.
 
-For the external functions, the possibility of infinite recursive calls exists, which would crash your game (Well, freeze it indefinitely). To stop this from happening, a recursion limiter is implemented in hexpattoanglesig.lua, at line 101, it is 1 by default. Feel free to change this to allow for any depth of recursion wanted.
+For the external functions, the possibility of infinite recursive calls exists, which would crash your game (Well, freeze it indefinitely). To stop this from happening, a recursion limiter is implemented in hexpattoanglesig.lua, at line 331, it is 1 by default. Feel free to change this to allow for any depth of recursion wanted.
 
 ### Custom Syntax:
 

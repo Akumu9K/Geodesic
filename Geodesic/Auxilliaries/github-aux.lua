@@ -6,7 +6,7 @@ local Repos = {
 
 -- Main Functions:
 
-function githubrequestwrapper(path, git_token)
+local function githubrequestwrapper(path, git_token)
     local sent_headers = {}
     if git_token then
         sent_headers["Authorization"] = "Bearer " .. git_token
@@ -17,7 +17,7 @@ function githubrequestwrapper(path, git_token)
     return result
 end
 
-function githubmap(page, path, repobaseurl, repofilegeturl, git_token)
+local function githubmap(page, path, repobaseurl, repofilegeturl, git_token)
     path = whitespacereplacer(path)
     local crawled_data = parseJson(githubrequestwrapper(repobaseurl .. path .. "?ls", git_token)) -- .. "?ls"
     local dirs, files = {}, {}
@@ -148,6 +148,7 @@ local github_interop_goto = github_location:newAction()
         action_wheel:setPage(github_start_page)
         pageclick()
     end)
+
 local return_action = github_start_page:newAction()
     :title("Go Back")
     :item("firework_rocket")
@@ -180,6 +181,7 @@ for i, v in ipairs(Repos) do
             action_wheel:setPage(repo_start_page)
             pageclick()
         end)
+
     local return_action = repo_start_page:newAction()
         :title("Go Back")
         :item("firework_rocket")

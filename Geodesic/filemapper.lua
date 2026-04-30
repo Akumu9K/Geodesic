@@ -6,7 +6,7 @@ local folder_icons = {
 
 -- Main Functions:
 
-function maphex(str)
+local function maphex(str)
     local start_path = str .. "/"
     local local_nodes = file:list(str)
     local full_map = {}
@@ -23,7 +23,7 @@ function maphex(str)
     return full_map
 end
 
-function map_onto_wheel(table,page)
+local function map_onto_wheel(table,page)
     local local_nodes = table
     for k, v in pairs(local_nodes) do
         if v["isDirectory"] == true then
@@ -94,13 +94,13 @@ function map_onto_wheel(table,page)
     end
 end
 
-function mapperwrapper(str,page)
+local function mapperwrapper(str,page)
     hexpat_list = {}
     hexpat_list_indexed = {}
     map_onto_wheel(maphex(str),page)
 end
 
-function initmap()
+local function initmap()
     mapperwrapper(Hex_repository,file_system)
     infobuttonsetter(tablesize(hexpat_list),last_requested_hex,isbusy)
 end

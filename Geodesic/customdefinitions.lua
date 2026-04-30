@@ -1,3 +1,16 @@
+-- Utility Functions:
+
+local function listmerger(...)
+    local inputs = {...}
+    local result = {}
+    for _, v in pairs(inputs) do
+        for k, value in pairs(v) do
+            result[k] = value
+        end
+    end
+    return result
+end
+
 -- Custom Definitions:
 
 local custom_pattern_list = {
@@ -21,25 +34,8 @@ local external_function_list = {
 
 -- Init:
 
-function events.entity_init()
-
-definition_list = listmerger(custom_pattern_list, replacement_pattern_list, inline_function_list, external_function_list)
+local definition_list = listmerger(custom_pattern_list, replacement_pattern_list, inline_function_list, external_function_list)
 
 for k, v in pairs(definition_list) do
     pattern_list[k] = v
-end
-
-end
-
--- Utility Functions:
-
-function listmerger(...)
-    local inputs = {...}
-    local result = {}
-    for _, v in pairs(inputs) do
-        for k, value in pairs(v) do
-            result[k] = value
-        end
-    end
-    return result
 end

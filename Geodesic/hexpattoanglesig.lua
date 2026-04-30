@@ -1,6 +1,235 @@
+-- Utility Functions:
+
+local function stringsplitter(str, splitter)
+    local string_list = {}
+    for i = 1, 2000, 1 do
+        local split_start, split_end = string.find(str, splitter)
+        if split_start ~= nil then
+            string_list[#string_list + 1] = string.sub(str, 1, (split_start - 1))
+            str = string.sub(str, (split_end + 1), -1)
+        elseif split_start == nil then
+            string_list[#string_list + 1] = string.sub(str, 1, -1)
+            break
+        end
+    end
+    return string_list
+end
+
+local function tablecompresser(table)
+    local max = 0
+    local new_table = {}
+    local current_index = 0
+    for k, v in pairs(table) do
+        if type(k) == "number" then
+            max = math.max(max,k)
+        end
+    end
+    for i = 1, max, 1 do
+        if table[i] == nil then
+            table[i] = "traversable nil"
+        end
+    end
+    for i, v in ipairs(table) do
+        if v ~= "traversable nil" then
+            current_index = current_index + 1
+            new_table[current_index] = v
+        end
+    end
+    return new_table
+end
+
+function trim(s) -- What the fuck is this thing. Stack overflow magic istg
+    return s:match( "^%s*(.-)%s*$" )
+end
+
+local function inttobinary(int)
+    int = math.floor(int)
+    local number = ""
+    for i = 1, 200, 1 do
+        if not (int > 0) then break end
+        number = tostring(int % 2) .. number
+        int = math.floor(int / 2)
+    end
+    return number
+end
+
+local function floattobinary(number)
+    local exponent = math.floor(math.log(number,2)+1)
+    local _, frac = math.modf(number/1)
+    for i = 1, 200, 1 do
+        if not (frac ~= 0) then break end
+        number = number * 2
+        _, frac = math.modf(number/1)
+    end
+    return inttobinary(number), exponent
+end
+
+local function boolcoerce(value)
+    return not not value
+end
+
+-- Special Handlers:
+
+local function bookkeepermaker(str)
+    str = trim(str)
+    local dir = ""
+    local anglesig = ""
+    if string.sub(str, 1, 1) == "v" then
+        dir = "SOUTH_EAST"
+        anglesig = "a"
+    elseif string.sub(str, 1, 1) == "-" then
+        dir = "EAST"
+        anglesig = ""
+    end
+    local remaining_string = string.sub(str, 2, -1)
+    for i = 1, string.len(remaining_string), 1 do
+        if string.sub(remaining_string, i, i) == "v" then
+            if string.sub(anglesig, -1, -1) == "a" then
+                anglesig = anglesig .. "da"
+            elseif string.sub(anglesig, -1, -1) == "w" then
+                anglesig = anglesig .. "ea"
+            else
+                anglesig = anglesig .. "ea"
+            end
+        elseif string.sub(remaining_string, i, i) == "-" then
+            if string.sub(anglesig, -1, -1) == "a" then
+                anglesig = anglesig .. "e"
+            elseif string.sub(anglesig, -1, -1) == "w" then
+                anglesig = anglesig .. "w"
+            else
+                anglesig = anglesig .. "w"
+            end
+        end
+    end
+    return {dir = dir, anglesig = anglesig, ishexpattern = true}
+end
+
+-- Deprecated:
+--[[
+function placeholderfinder(str)
+    str = trim(str)
+    return string.match(str,"%(.*%)")
+end
+
+function placeholdermaker(str)
+    local f = string.find(str, "(Empty)")
+    f = f or string.find(str, "(EMPTY)")
+    f = f or string.find(str, "(empty)")
+    if f ~= nil then
+       return nil
+    else
+        return {dir = "EAST", anglesig = "", ishexpattern = true}
+    end
+end
+--]]
+
+local function illegalnumgen(num)
+    local tail = ""
+    local return_sig = {dir = "", anglesig = "", ishexpattern = true}
+    if string.sub(num, 1, 1) == "-" then
+        return_sig["anglesig"] = "dedd"
+        return_sig["dir"] = "NORTH_EAST"
+        num = string.sub(num, 2, -1)
+    elseif string.sub(num, 1, 1)  ~= "-" then
+        return_sig["anglesig"] = "aqaa"
+        return_sig["dir"] = "SOUTH_EAST"
+        num = string.sub(num, 1, -1)
+    end
+    num = math.abs(num + 0) -- To convert the string to a number
+    local mantissa, exponent = floattobinary(num)
+    for i = 1, string.len(mantissa), 1 do
+        if string.sub(mantissa, i, i) == "1" then
+            tail = tail .. "wa"
+        elseif string.sub(mantissa, i, i) == "0" then --and i ~= string.len(mantissa)
+            tail = tail .. "a"
+        end
+    end
+    local exp_limit = 20000
+    if math.abs(exponent) > exp_limit  then -- This is the sneakiest bug I have ever seen, what the fuck.
+        exponent = 0
+    end
+    local exp_mod = (string.len(mantissa) - (exponent - 1))
+    for i = 1, exp_mod, 1 do
+        tail = tail .. "d"
+    end
+    return_sig["anglesig"] = return_sig["anglesig"] .. tail
+    return return_sig
+end
+
+local patternresolver -- Because lua is cringe
+
+local function considerationhandler(pattern)
+    local considered_pattern = patternresolver(trim(pattern))
+    if considered_pattern == nil then return pattern_list["Consideration"] end
+    local result = {ismultipleiotas = true, [1] = pattern_list["Consideration"], [2] = considered_pattern}
+    ---[[ -- The hexpattern addon syntax wise, this should never be used, but it exists now I guess.
+    if considered_pattern["ismultipleiotas"] == true then
+        result[2] = nil
+        for l, n in ipairs(considered_pattern) do
+            result[#result+1] = considered_pattern[l]
+        end
+    end
+    --]]
+    return result
+end
+
+local function nonpatiotahandler(str)
+    --error("Unsupported iota encountered in .hexpattern", 100)
+    str = string.match(str,"%<(.*)%>") or str
+    local pat_check = patternresolver(trim(str))
+    if pat_check ~= nil then
+        return pat_check
+    end
+    return {dir = "EAST", anglesig = "", ishexpattern = true}
+end
+
+-- Deprecated:
+--[[
+local function nonpatiotafinder(str)
+    str = trim(str)
+    return string.match(str,"%<(.*)%>")
+end
+--]]
+
+local function specialhandlingfinder(str) -- TODO: Put the special handlers in their own file when its time to handle inline lists
+    local fallback_placeholder = {dir = "SOUTH_EAST", anglesig = "dwddwddwwawaaqddq", ishexpattern = true}
+    local nonpatiota = string.match(trim(str),"%<(.*)%>")
+    if nonpatiota ~= nil then
+        return nonpatiotahandler(nonpatiota)
+    end
+    local f, e = nil, nil
+    f, e = string.find(str, "Bookkeeper's Gambit:")
+    if f ~= nil then
+        local bookkeepers = trim(string.sub(str, e+1, -1))
+        return bookkeepermaker(bookkeepers)
+    end
+    f, e = string.find(str, "Numerical Reflection:")
+    if f ~= nil then
+        local number = trim(string.sub(str, e+1, -1))
+        local pre_gen_number = pattern_list[number]
+        if pre_gen_number == nil then
+            return illegalnumgen(number)
+            --return fallback_placeholder
+        elseif pre_gen_number ~= nil then
+            pre_gen_number["ishexpattern"] = true
+            return pre_gen_number
+        end
+    end
+    f, e = string.find(str, "Consideration:")
+    if f ~= nil then
+        return considerationhandler(trim(string.sub(str, e+1, -1)))
+    end
+    --[[
+    if placeholderfinder(str) ~= nil then
+        return placeholdermaker(str)
+    end
+    ]]
+    return nil
+end
+
 -- Main Functions:
 
-function hexpattrimmed(str)
+local function hexpattrimmed(str)
     -- Split apart the lines
     str = stringsplitter(str,"\r")
     if #str <= 1 then
@@ -37,23 +266,18 @@ function hexpattrimmed(str)
     return str
 end
 
-function hextrimmedtopatterns(str_table, recursion_check)
-    local patterns = {}
-    for i, v in ipairs(str_table) do
-        local resolved_pattern = patternresolver(v, recursion_check)
-        if resolved_pattern == nil then
-            patterns[#patterns+1] = nil
-        elseif resolved_pattern["ismultipleiotas"] == true then
-            for l, n in ipairs(resolved_pattern) do
-                patterns[#patterns+1] = resolved_pattern[l]
-            end
-        else
-            patterns[#patterns+1] = resolved_pattern
+local function patkeymatcher(value)
+    local result = pattern_list[value]
+    if result ~= nil then
+        return result
+    end
+    for k, v in pairs(custom_syntax) do
+        local match = string.match(value, k)
+        if boolcoerce(match) then
+            result = v
         end
     end
-    patterns = tablecompresser(patterns)
-    --printTable(patterns)
-    return patterns
+    return result
 end
 
 function patternresolver(pattern, recursion_check)
@@ -84,18 +308,23 @@ function patternresolver(pattern, recursion_check)
     end
 end
 
-function patkeymatcher(value)
-    local result = pattern_list[value]
-    if result ~= nil then
-        return result
-    end
-    for k, v in pairs(custom_syntax) do
-        local match = string.match(value, k)
-        if boolcoerce(match) then
-            result = v
+local function hextrimmedtopatterns(str_table, recursion_check)
+    local patterns = {}
+    for i, v in ipairs(str_table) do
+        local resolved_pattern = patternresolver(v, recursion_check)
+        if resolved_pattern == nil then
+            patterns[#patterns+1] = nil
+        elseif resolved_pattern["ismultipleiotas"] == true then
+            for l, n in ipairs(resolved_pattern) do
+                patterns[#patterns+1] = resolved_pattern[l]
+            end
+        else
+            patterns[#patterns+1] = resolved_pattern
         end
     end
-    return result
+    patterns = tablecompresser(patterns)
+    --printTable(patterns)
+    return patterns
 end
 
 function hexpattoanglesig(hexpattern, recursion_check)
@@ -108,204 +337,30 @@ function hexpattoanglesig(hexpattern, recursion_check)
     return anglesig_tabled
 end
 
--- Special Handler Functions:
+-- Experimental:
 
-function specialhandlingfinder(str) -- TODO: Put the special handlers in their own file when its time to handle inline lists
-    local fallback_placeholder = {dir = "SOUTH_EAST", anglesig = "dwddwddwwawaaqddq", ishexpattern = true}
-    local nonpatiota = nonpatiotafinder(str)
-    if nonpatiota ~= nil then
-        return nonpatiotahandler(nonpatiota)
+local function variadicstringsplitter(str, ...)
+    local splitters = {...}
+    if #splitters == 0 then
+        return {str}
     end
-    local f, e = nil, nil
-    f, e = string.find(str, "Bookkeeper's Gambit:")
-    if f ~= nil then
-        local bookkeepers = trim(string.sub(str, e+1, -1))
-        return bookkeepermaker(bookkeepers)
-    end
-    f, e = string.find(str, "Numerical Reflection:")
-    if f ~= nil then
-        local number = trim(string.sub(str, e+1, -1))
-        local pre_gen_number = pattern_list[number]
-        if pre_gen_number == nil then
-            return illegalnumgen(number)
-            --return fallback_placeholder
-        elseif pre_gen_number ~= nil then
-            pre_gen_number["ishexpattern"] = true
-            return pre_gen_number
+    local split_strings = stringsplitter(str, splitters[1])
+    local output = {}
+    for i, v in ipairs(split_strings) do
+        local split_further = variadicstringsplitter(str, table.unpack(splitters, 2, #splitters))
+        for l, k in ipairs(split_further) do
+            output[#output+1] = k
         end
     end
-    f, e = string.find(str, "Consideration:")
-    if f ~= nil then
-        return considerationhandler(trim(string.sub(str, e+1, -1)))
-    end
-    return nil
+    return output
 end
 
-function bookkeepermaker(str)
-    str = trim(str)
-    local dir = ""
-    local anglesig = ""
-    if string.sub(str, 1, 1) == "v" then
-        dir = "SOUTH_EAST"
-        anglesig = "a"
-    elseif string.sub(str, 1, 1) == "-" then
-        dir = "EAST"
-        anglesig = ""
+local function variadicstringsplitter2(str, ...)
+    local splitter_list = {...}
+    local split_nums = {}
+    for k, v in pairs(splitter_list) do
+        
     end
-    local remaining_string = string.sub(str, 2, -1)
-    for i = 1, string.len(remaining_string), 1 do
-        if string.sub(remaining_string, i, i) == "v" then
-            if string.sub(anglesig, -1, -1) == "a" then
-                anglesig = anglesig .. "da"
-            elseif string.sub(anglesig, -1, -1) == "w" then
-                anglesig = anglesig .. "ea"
-            else
-                anglesig = anglesig .. "ea"
-            end
-        elseif string.sub(remaining_string, i, i) == "-" then
-            if string.sub(anglesig, -1, -1) == "a" then
-                anglesig = anglesig .. "e"
-            elseif string.sub(anglesig, -1, -1) == "w" then
-                anglesig = anglesig .. "w"
-            else
-                anglesig = anglesig .. "w"
-            end
-        end
-    end
-    return {dir = dir, anglesig = anglesig, ishexpattern = true}
-end
-
-function illegalnumgen(num)
-    local tail = ""
-    local return_sig = {dir = "", anglesig = "", ishexpattern = true}
-    if string.sub(num, 1, 1) == "-" then
-        return_sig["anglesig"] = "dedd"
-        return_sig["dir"] = "NORTH_EAST"
-        num = string.sub(num, 2, -1)
-    elseif string.sub(num, 1, 1)  ~= "-" then
-        return_sig["anglesig"] = "aqaa"
-        return_sig["dir"] = "SOUTH_EAST"
-        num = string.sub(num, 1, -1)
-    end
-    num = math.abs(num + 0) -- To convert the string to a number
-    local mantissa, exponent = floattobinary(num)
-    for i = 1, string.len(mantissa), 1 do
-        if string.sub(mantissa, i, i) == "1" then
-            tail = tail .. "wa"
-        elseif string.sub(mantissa, i, i) == "0" then --and i ~= string.len(mantissa)
-            tail = tail .. "a"
-        end
-    end
-    local exp_limit = 20000
-    if math.abs(exponent) > exp_limit  then -- This is the sneakiest bug I have ever seen, what the fuck.
-        exponent = 0
-    end
-    local exp_mod = (string.len(mantissa) - (exponent - 1))
-    for i = 1, exp_mod, 1 do
-        tail = tail .. "d"
-    end
-    return_sig["anglesig"] = return_sig["anglesig"] .. tail
-    return return_sig
-end
-
-function considerationhandler(pattern)
-    local considered_pattern = patternresolver(trim(pattern))
-    if considered_pattern == nil then return pattern_list["Consideration"] end
-    local result = {ismultipleiotas = true, [1] = pattern_list["Consideration"], [2] = considered_pattern}
-    ---[[ -- The hexpattern addon syntax wise, this should never be used, but it exists now I guess.
-    if considered_pattern["ismultipleiotas"] == true then
-        result[2] = nil
-        for l, n in ipairs(considered_pattern) do
-            result[#result+1] = considered_pattern[l]
-        end
-    end
-    --]]
-    return result
-end
-
-function nonpatiotafinder(str)
-    str = trim(str)
-    return string.match(str,"%<(.*)%>")
-end
-
-function nonpatiotahandler(str)
-    --error("Unsupported iota encountered in .hexpattern", 100)
-    str = string.match(str,"%<(.*)%>") or str
-    local pat_check = patternresolver(trim(str))
-    if pat_check ~= nil then
-        return pat_check
-    end
-    return {dir = "EAST", anglesig = "", ishexpattern = true}
-end
-
--- Utility Functions:
-
-function stringsplitter(str, splitter)
-    local string_list = {}
-    for i = 1, 500, 1 do
-        local split_start, split_end = string.find(str, splitter)
-        if split_start ~= nil then
-            string_list[#string_list + 1] = string.sub(str, 1, (split_start - 1))
-            str = string.sub(str, (split_end + 1), -1)
-        elseif split_start == nil then
-            string_list[#string_list + 1] = string.sub(str, 1, -1)
-            break
-        end
-    end
-    return string_list
-end
-
-function tablecompresser(table)
-    local max = 0
-    local new_table = {}
-    local current_index = 0
-    for k, v in pairs(table) do
-        if type(k) == "number" then
-            max = math.max(max,k)
-        end
-    end
-    for i = 1, max, 1 do
-        if table[i] == nil then
-            table[i] = "traversable nil"
-        end
-    end
-    for i, v in ipairs(table) do
-        if v ~= "traversable nil" then
-            current_index = current_index + 1
-            new_table[current_index] = v
-        end
-    end
-    return new_table
-end
-
-function trim(s) -- What the fuck is this thing. Stack overflow magic istg
-    return s:match( "^%s*(.-)%s*$" )
-end
-
-function floattobinary(number)
-    local exponent = math.floor(math.log(number,2)+1)
-    local _, frac = math.modf(number/1)
-    for i = 1, 200, 1 do
-        if not (frac ~= 0) then break end
-        number = number * 2
-        _, frac = math.modf(number/1)
-    end
-    return inttobinary(number), exponent
-end
-
-function inttobinary(int)
-    int = math.floor(int)
-    local number = ""
-    for i = 1, 200, 1 do
-        if not (int > 0) then break end
-        number = tostring(int % 2) .. number
-        int = math.floor(int / 2)
-    end
-    return number
-end
-
-function boolcoerce(value)
-    return not not value
 end
 
 -- Storage:

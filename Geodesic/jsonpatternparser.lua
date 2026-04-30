@@ -4,11 +4,13 @@ local patterns_json = "patternsbig.json"
 
 -- Main Functions:
 
-function parsepatlist()
+local function parsepatlist()
     local patterns_raw = (parseJson(file:readString(patterns_json, "utf8")))
     local patterns_processed = {}
     for k, v in pairs(patterns_raw["patterns"]) do
         patterns_processed[v["name"]] = {dir = v["direction"], anglesig = v["signature"], ishexpattern = true}
+        --patterns_processed[v["name"]]["id"] = string.sub(v["id"], string.find(v["id"], ":") + 1, -1) -- This is for hexparse compat, just keeping it commented out since it is not implemented yet
+        --patterns_processed[v["name"]]["origin"] = string.sub(v["id"], 1, string.find(v["id"], ":") - 1)
     end
     --[[ // Will keep this section knocked out for now, it seems illegalnumgen is stable enough to replace pregen nums
     for k, v in pairs(patterns_raw["pregenerated_numbers"]) do

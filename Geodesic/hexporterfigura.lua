@@ -39,13 +39,13 @@ return_delay = 8 -- Tick delay before the hexporter marks itself as ready to imp
 request_tick = -1
 request_partition = {}
 isbusy = false
-return_time = -1
+local return_time = -1
 
-current_partition_list = {}
-next_partition = -1
+local current_partition_list = {}
+local next_partition = -1
 
-total_bytes_sent = -1
-total_iotas_sent = -1
+local total_bytes_sent = -1
+local total_iotas_sent = -1
 
 function events.tick()
     if (#request_partition ~= 0) and (isbusy == false) then
