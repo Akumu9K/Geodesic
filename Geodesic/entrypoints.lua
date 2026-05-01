@@ -3,12 +3,12 @@
 function formatfinder(str)
     -- Hexparty Json
     local success, result, type = pcall(hexpartyjsonhandler, str)
-    if success then
+    if success and #result > 0 then
         return result, type
     end
     -- Hextweaks Lua Table
     local success, result, type = pcall(hextweakstablehandler, str)
-    if success then
+    if success and #result > 0 then
         return result, type
     end
     -- HexAssembly
@@ -18,7 +18,12 @@ function formatfinder(str)
     end
     -- .hexpattern
     local type = ".hexpattern"
-    return hexpattoanglesig(str), nil
+    local result = hexpattoanglesig(str)
+    if #result > 0 then
+        return hexpattoanglesig(str), type
+    end
+    -- No Format Found:
+    error("Unknown format, or malformed/unimportable file", 100)
 end
 
 -- Format Handlers:

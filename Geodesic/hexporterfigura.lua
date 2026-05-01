@@ -14,7 +14,12 @@ function caller(str)
     if isbusy == true then
         return false
     elseif isbusy == false then
-        request_partition = prepper(str)
+        local importable_list = prepper(str)
+        if #importable_list == 0 then
+            error("Uninitialized or faulty partitioner", 100)
+            return false
+        end
+        request_partition = importable_list
         request_tick = world.getTime() + 1
         return true
     end
