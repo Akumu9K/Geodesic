@@ -5,7 +5,7 @@ function partitioner(table) -- Placeholder for an endpoint
 end
 
 function prepper(str)
-    local anglesiglist, type = formatfinder(str)
+    local anglesiglist, type = entrypointwrapper(str)
     local partitioned_list = partitioner(anglesiglist)
     return partitioned_list
 end

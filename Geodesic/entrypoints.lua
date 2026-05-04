@@ -1,6 +1,15 @@
 -- Main Functions:
 
-function formatfinder(str)
+function entrypointwrapper(str, recursion_check)
+    local recursion_limit = 1
+    if recursion_check == nil then recursion_check = 0 end
+    if recursion_check > recursion_limit then error("Recursive function call detected, halting importation", 100) end
+
+    local result, type = formatfinder(str, recursion_check)
+    return result, type
+end
+
+function formatfinder(str, recursion_check)
     -- Hexparty Json
     local success, result, type = pcall(hexpartyjsonhandler, str)
     if success and #result > 0 then
@@ -14,19 +23,27 @@ function formatfinder(str)
     -- HexAssembly
     local type = "HexAssembly"
     if string.find(str, "%<MAIN%>:") then
-        return hexpattoanglesig(hexassemble(str)), type
+        return hexpattoanglesig(hexassemble(str), recursion_check), type
     end
     -- .hexpattern
     local type = ".hexpattern"
-    local result = hexpattoanglesig(str)
+    local result = hexpattoanglesig(str, recursion_check)
     if #result > 0 then
-        return hexpattoanglesig(str), type
+        return result, type
+    end
+    -- Hexparse
+    local type = "HexParse"
+    local result = hexparsetoanglesig(str, recursion_check)
+    if #result > 0 then
+        return result, type
     end
     -- No Format Found:
     error("Unknown format, or malformed/unimportable file", 100)
 end
 
 -- Format Handlers:
+
+-- TODO: Make more complex checks, these can be fooled sometimes
 
 -- HexParty Json:
 

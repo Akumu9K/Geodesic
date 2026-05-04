@@ -145,7 +145,7 @@ Continuing the previous section is the next 2 tables, which are used to define f
 
 "external_function_list" is meant for calling seperate .hexpattern files as functions. These files are processed the same way as all others, and then the result is put into the hex at the spot of the function call, somewhat akin to flattening a list. Once again, there is an example included, the field "isexternalfunction" needs to be true, and the location of the file needs to go into "functionlocation", starting from the figura/data folder but not including it.
 
-For the external functions, the possibility of infinite recursive calls exists, which would crash your game (Well, freeze it indefinitely). To stop this from happening, a recursion limiter is implemented in hexpattoanglesig.lua, at line 104, it is 1 by default. Feel free to change this to allow for any depth of recursion wanted.
+For the external functions, the possibility of infinite recursive calls exists, which would crash your game (Well, freeze it indefinitely). To stop this from happening, a recursion limiter is implemented in entrypoints.lua, at line 4, it is 1 by default. Feel free to change this to allow for any depth of recursion wanted.
 
 ### Custom Syntax:
 

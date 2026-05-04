@@ -73,7 +73,7 @@ function patternresolver(pattern, recursion_check)
     elseif matched_pattern ~= nil then
         if matched_pattern["isexternalfunction"] == true then
             local called_function = filereader(matched_pattern["functionlocation"])
-            called_function = hexpattoanglesig(called_function, recursion_check + 1)
+            called_function = entrypointwrapper(called_function, recursion_check + 1)
             called_function["ismultipleiotas"] = true
             return called_function
         elseif matched_pattern["ismultipleiotas"] == true then
@@ -101,9 +101,11 @@ function patkeymatcher(value)
 end
 
 function hexpattoanglesig(hexpattern, recursion_check)
+    --[[
     local recursion_limit = 1
     if recursion_check == nil then recursion_check = 0 end
     if recursion_check > recursion_limit then error("Recursive function call detected, halting importation", 100) end
+    ]]
 
     local string_processed = hexpattrimmed(hexpattern)
     local anglesig_tabled = hextrimmedtopatterns(string_processed, recursion_check)

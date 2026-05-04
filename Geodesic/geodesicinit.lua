@@ -1,9 +1,8 @@
 if host:isHost() then
 require("./UIsounds")
 
-require("./HexAssembler.textparser")
-
 require("./filemapper")
+require("./Auxilliaries.auxinit")
 
 require("./jsonpatternparser")
 require("./patternlistadjust")
@@ -11,12 +10,15 @@ require("./customdefinitions")
 require("./customsyntax")
 
 require("./hexpattoanglesig")
+require("./hexparse")
+require("./HexAssembler.textparser")
 require("./entrypoints")
+
 require("./hexporterfigura")
 require("./perworldendpoints")
+
 require("./perworldconfig")
 
-require("./Auxilliaries.auxinit")
-
 require("./mediatransportparser")
+
 end
