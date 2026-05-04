@@ -27,16 +27,14 @@ end
 
 -- Mediatransport:
 
-function statpartitioner(table, partition_size, max_partition)
-    local max_partitions = max_partition or 1024
-    local partition_length = partition_size or 250
+function statpartitioner(table)
     local partition_table = {}
-    for i = 1, max_partitions, 1 do
+    for i = 1, max_part, 1 do
         local partition = {}
-        if table[((i-1)*partition_length)+1] ~= nil then
-            for j = 1, partition_length, 1 do
-                if table[((i-1)*partition_length)+j] ~= nil then
-                    partition[j] = table[((i-1)*partition_length)+j]
+        if table[((i-1)*part_size)+1] ~= nil then
+            for j = 1, part_size, 1 do
+                if table[((i-1)*part_size)+j] ~= nil then
+                    partition[j] = table[((i-1)*part_size)+j]
                 else
                     break
                 end
@@ -88,19 +86,17 @@ end
 
 -- Moreiotas:
 
-function dynpartitioner(table, partition_size, max_partition)
-    local max_partitions = max_partition or 1024
-    local part_size_byte = partition_size or 254
+function dynpartitioner(table)
     local partition_table = {}
     local index = 1
-    for i = 1, max_partitions, 1 do
+    for i = 1, max_part, 1 do
         if index > #table then break end
-        local remaining_bytes = part_size_byte
+        local remaining_bytes = part_size
         partition_table[i] = {}
-        for l = 1, part_size_byte, 1 do
+        for l = 1, part_size, 1 do
             if index > #table then break end
             local bytes = string.len(table[index]["anglesig"]) + 1 + 1
-            if bytes > part_size_byte then
+            if bytes > part_size then
                 print(table[index])
                 error("Pattern size exceeded max partition size at index: " .. index, 100)
             elseif bytes > remaining_bytes then

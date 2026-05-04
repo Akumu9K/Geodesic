@@ -1,12 +1,12 @@
 -- Main Functions:
 
-function partitioner(table, partition_size, max_partition) -- Placeholder for an endpoint
+function partitioner(table) -- Placeholder for an endpoint
     return {}
 end
 
-function prepper(str) 
+function prepper(str)
     local anglesiglist, type = formatfinder(str)
-    local partitioned_list = partitioner(anglesiglist,part_size,max_part)
+    local partitioned_list = partitioner(anglesiglist)
     return partitioned_list
 end
 
