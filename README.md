@@ -190,6 +190,8 @@ This feature is currently a stub that does not do anything (Of note), mentioned 
 
 It merely parses the iotas it receives from mediatransports 2 send functions (One for you sending to your avatar, and the other for someone else sending to your avatar), and prints the result.
 
+It also has pretty printing for the iotas, which displays them *mostly* like how reveal would. Theres a built in string length limit on lines 8 and 22 however, so that really huge iotas dont spam the chat and lag the game. If the limit is exceeded, the raw parsed result is printed instead.
+
 As this feature only works with a single endpoint, I am not sure whether building a few more features ontop of it is worthwhile, but included nonetheless.
 
 ### Hex Assembler:

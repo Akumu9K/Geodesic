@@ -5,9 +5,11 @@ if client.isModLoaded("mediatransport") then
 function server_packets.transport_received(data)
     local output = parseMT(data)
     print("Self Transport Received")
-    if output["display"] then
+    local max_length = 2500
+    if output["display"] and string.len(output["display"]) < max_length then
         hexdisplay(output["display"])
     else
+        removedisplay(output)
         printTable(output)
     end
     host:writeToLog(toJson(output))
@@ -17,9 +19,11 @@ end
 function server_packets.transport_external_received(data)
     local output = parseMT(data)
     print("External Transport Received")
-    if output["display"] then
+    local max_length = 2500
+    if output["display"] and string.len(output["display"]) < max_length then
         hexdisplay(output["display"])
     else
+        removedisplay(output)
         printTable(output)
     end
     host:writeToLog(toJson(output))
@@ -82,6 +86,16 @@ local function listdisplay(list)
     list_string = string.gsub(list_string, "§5,§f $", "")
     list_string = "§5[§f" .. list_string .. "§5]§f"
     return list_string
+end
+
+function removedisplay(list)
+    list["display"] = nil
+    for k, v in pairs(list) do
+        if type(v) == "table" then
+            list[k] = removedisplay(v)
+        end
+    end
+    return list
 end
 
 -- Main Functions:
