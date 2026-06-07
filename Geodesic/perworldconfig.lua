@@ -39,9 +39,13 @@ if Endpoint_Table[server_data["endpoint"]] == nil then
     error("Invalid endpoint, or endpoint not found.")
 end
 
-for k, v in pairs(Endpoint_Table[server_data["endpoint"]] or {}) do
-    if v == nil then return end
-    changevar(k, v)
+if client.isModLoaded("hexcasting") then
+    for k, v in pairs(Endpoint_Table[server_data["endpoint"]] or {}) do
+        if v == nil then return end
+        changevar(k, v)
+    end
+else
+    host:writeToLog("Hexcasting not found, endpoints uninitialized.")
 end
 
 end
