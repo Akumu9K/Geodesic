@@ -23,6 +23,13 @@ Endpoint_Table["Hexparse"] = Hexparse
 
 end
 
+local Hextweaks = { -- Copy of moreiotas with legalnumgen in it
+    sender = textsender,
+    partitioner = dynpartitioner,
+    illegalnumgen = legalnumgenwrapper,
+}
+Endpoint_Table["Hextweaks"] = Hextweaks
+
 -- Endpoints:
 
 -- Mediatransport:
