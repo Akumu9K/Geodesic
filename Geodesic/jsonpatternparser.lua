@@ -13,7 +13,7 @@ local function parsepatlist()
         --patterns_processed[v["name"]]["name"] = v["name"]
         --patterns_processed[v["name"]]["origin"] = string.sub(v["id"], 1, string.find(v["id"], ":") - 1)
     end
-    --[[ // Will keep this section knocked out for now, it seems illegalnumgen is stable enough to replace pregen nums
+    ---[[ // Will keep this section knocked out for now, it seems illegalnumgen is stable enough to replace pregen nums
     for k, v in pairs(patterns_raw["pregenerated_numbers"]) do
         patterns_processed[k] = {dir = v["direction"], anglesig = v["signature"]}
     end
