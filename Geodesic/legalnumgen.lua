@@ -65,6 +65,8 @@ function legalnumgen(number)
 end
 
 function legalnumgenwrapper(number)
+    number = number + 0
+
     local is_negative = false
     if number ~= math.abs(number) then
         is_negative = true
@@ -91,8 +93,10 @@ function legalnumgenwrapper(number)
         result[#result+1] = pattern_list["Multiplicative Distillation"]
     end
 
-    result[#result+1] = pattern_list[change .. ""]
-    result[#result+1] = pattern_list["Additive Distillation"]
+    if change ~= 0 then
+        result[#result+1] = pattern_list[change .. ""]
+        result[#result+1] = pattern_list["Additive Distillation"]
+    end
 
     if exp ~= 0 then
         result[#result+1] = pattern_list["10"]
