@@ -64,5 +64,7 @@ end
 
 id_list = {}
 for k, v in pairs(pattern_list) do
-    id_list[v["id"]] = v
+    if v["id"] ~= nil then
+        id_list[v["id"]] = v
+    end
 end

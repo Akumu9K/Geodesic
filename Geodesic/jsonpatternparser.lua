@@ -15,7 +15,7 @@ local function parsepatlist()
     end
     ---[[ // Will keep this section knocked out for now, it seems illegalnumgen is stable enough to replace pregen nums
     for k, v in pairs(patterns_raw["pregenerated_numbers"]) do
-        patterns_processed[k] = {dir = v["direction"], anglesig = v["signature"]}
+        patterns_processed[k] = {dir = v["direction"], anglesig = v["signature"], ishexpattern = true}
     end
     --]]
     return patterns_processed
