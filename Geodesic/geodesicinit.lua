@@ -14,9 +14,9 @@ require("./hexparse")
 require("./HexAssembler.textparser")
 require("./entrypoints")
 
-require("./legalnumgen")
-
 require("./hexporterfigura")
+
+require("./legalnumgen")
 require("./perworldendpoints")
 
 require("./perworldconfig")
