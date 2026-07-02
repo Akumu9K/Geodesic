@@ -93,28 +93,29 @@ end
 
 -- Moreiotas:
 
-function dynpartitioner(table)
+function dynpartitioner(list)
     local partition_table = {}
     local index = 1
     for i = 1, max_part, 1 do
-        if index > #table then break end
+        if index > #list then break end
         local remaining_bytes = part_size
         partition_table[i] = {}
         for l = 1, part_size, 1 do
-            if index > #table then break end
-            local bytes = string.len(table[index]["anglesig"]) + 1 + 1
+            if index > #list then break end
+            local bytes = string.len(list[index]["anglesig"]) + 1 + 1
             if bytes > part_size then
-                print(table[index])
+                print(list[index])
                 error("Pattern size exceeded max partition size at index: " .. index, 100)
             elseif bytes > remaining_bytes then
                 break
             else
                 remaining_bytes = remaining_bytes - bytes
-                partition_table[i][l] = table[index]
+                partition_table[i][l] = list[index]
                 index = index + 1
             end
         end
     end
+    table.insert(partition_table, 1, {})
     return partition_table
 end
 
@@ -127,8 +128,10 @@ function textsender(part)
         chatmsg = chatmsg .. dir_convert[v["dir"]] .. v["anglesig"] .. " "
         length = length + string.len(v["anglesig"]) + 2
     end
-    chatmsg = string.sub(chatmsg, 1, -2) -- To remove trailing space
-    length = length - 1 -- To match the above
+    if #part ~= 0 then
+        chatmsg = string.sub(chatmsg, 1, -2) -- To remove trailing space
+        length = length - 1 -- To match the above
+    end
     host:sendChatMessage(chatmsg)
     return length
 end
