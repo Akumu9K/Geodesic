@@ -5,7 +5,7 @@ local methods = peripheral.getMethods("back")
 local type = peripheral.getType(staff)
 
 if type ~= "wand" then
-    print("Error")
+    error("No staff peripheral found")
 end
 
 -- Main Functions:
@@ -26,7 +26,7 @@ function deserializer(str)
     for i, v in ipairs(patterns) do
         local dir = string.sub(v, 1, 1)
         local anglesig = string.sub(v, 2, -1)
-        output[i] = {["dir"] = dir_convert_inv[dir], ["anglesig"] = anglesig}
+        output[i] = {["startDir"] = dir_convert_inv[dir], ["angles"] = anglesig, [ "iota$serde" ] = "hextweaks:pattern"}
     end
 
     return output
@@ -34,11 +34,8 @@ end
 
 function hexifier(list)
     staff.clearStack()
-    staff.runPattern("WEST", "qqq") -- Introspection
-    for i, v in ipairs(list) do
-        staff.runPattern(v["dir"], v["anglesig"])
-    end
-    staff.runPattern("EAST", "eee") -- Retrospection
+    list[ "iota$serde" ] = "hextweaks:list"
+    staff.pushStack(list)
 end
 
 function splitter(istr)
@@ -63,11 +60,9 @@ local result = {}
 staff.runPattern("EAST", "waqa") -- Whisper Ref.
 old_data = staff.getStack()[1]
 
--- Running Portion:
+-- Iteration Function:
 
-os.startTimer(0)
-while true do
-    local event = os.pullEvent("timer")
+function iteration()
     staff.clearStack()
 
     -- Get Data Stream
@@ -75,10 +70,11 @@ while true do
     local new_data = staff.getStack()[1] or old_data
 
     if new_data ~= old_data then
-        -- Start Importation
+        -- Start/Continue Importation
         importing = true
         clock = clock_limit
         old_data = new_data
+
         -- Handle Data
         local section = deserializer(new_data)
         for i, v in ipairs(section) do
@@ -94,7 +90,29 @@ while true do
         -- Output Result
         hexifier(result)
         staff.runPattern("NORTH_EAST", "deeeee") -- Scribes Gambit
+        -- Feedback
+        print("Importation Successful")
+        print("Received Iotas: " .. #result)
         -- Reset
+        importing = false
+        clock = 0
+        result = {}
+    end
+end
+
+-- Running Portion:
+
+os.startTimer(0)
+while true do
+    local event = os.pullEvent("timer")
+
+    local success, err = pcall(iteration)
+    if success == false then
+        printError(err)
+        print("Importation Failed")
+        print("Received Iotas: " .. #result)
+        -- Reset
+        --staff.clearStack()
         importing = false
         clock = 0
         result = {}
@@ -102,3 +120,4 @@ while true do
 
     os.startTimer(0)
 end
+
