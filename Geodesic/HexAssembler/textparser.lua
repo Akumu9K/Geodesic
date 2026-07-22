@@ -46,18 +46,24 @@ local iota_embed = "" ..
     "Retrospection \r\n" ..
     "Flock's Disintegration \r\n"
 
+local init_value_index = "" ..
+    "Numerical Reflection: %d \r\n"
+
 local call_init_value = "" ..
-    "Flock's Reflection \r\n" ..
+    "Muninn's Reflection \r\n" ..
     "Numerical Reflection: %d \r\n" ..
-    "Subtractive Distillation \r\n" ..
-    "Fisherman's Gambit II \r\n"
+    "Selection Distillation \r\n"
 
 local execute_init_value = "" ..
-    "Flock's Reflection \r\n" ..
+    "Muninn's Reflection \r\n" ..
     "Numerical Reflection: %d \r\n" ..
-    "Subtractive Distillation \r\n" ..
-    "Fisherman's Gambit II \r\n" ..
+    "Selection Distillation \r\n" ..
     "Hermes' Gambit \r\n"
+
+local init_setup = "\r\n" ..
+    "Flock's Reflection \r\n" ..
+    "Flock's Gambit \r\n" ..
+    "Huginn's Gambit \r\n"
 
 local spacer = "" ..
     "\r\n" ..
@@ -68,8 +74,9 @@ local spacer = "" ..
 
 local function replacecalls(str, call_table, unroll_table)
     for i, v in ipairs(call_table) do
-        str = string.gsub(str, "%[" .. v["name"] .. "%]%(%)", string.format(spacer, string.format(execute_init_value, i)))
-        str = string.gsub(str, "%[" .. v["name"] .. "%]", string.format(spacer, string.format(call_init_value, i)))
+        str = string.gsub(str, "%[" .. v["name"] .. "%]%(%)", string.format(spacer, string.format(execute_init_value, i - 1)))
+        str = string.gsub(str, "%[" .. v["name"] .. "%]", string.format(spacer, string.format(call_init_value, i - 1)))
+        str = string.gsub(str, "%<" .. v["name"] .. "%>", string.format(spacer, string.format(init_value_index, i - 1)))
     end
     for i, v in pairs(unroll_table) do
         str = string.gsub(str, "%[" .. v["name"] .. "%]%(%)", string.format(spacer, string.format(v["call_embed_type"], v["value"]) )) --.. "\r\nHermes' Gambit"
@@ -113,7 +120,7 @@ local function inittables(str)
     end
     for name, import in string.gmatch(str, import_capture) do
         if name ~= "" then
-        local unrolled_function = filereader(import) -- Add pcall here
+        local unrolled_function = importreader(import) -- Add pcall here
         call_table[#call_table+1] = {
             type = "import", 
             name = name, 
@@ -147,7 +154,7 @@ local function inittables(str)
     end
     for name, import in string.gmatch(str, include_capture) do
         if name ~= "" then
-        local unrolled_function = filereader(import) -- Add pcall here
+        local unrolled_function = importreader(import) -- Add pcall here
         unroll_table[#unroll_table+1] = {
             type = "include", 
             name = name, 
@@ -213,8 +220,8 @@ function hexassemble(str)
     str = preparse(str)
     local init, main = findsections(str)
     local call_table, unroll_table = inittables(init)
-    local hex_init = parseinit(call_table)
-    local result = hex_init .. "\r\n" .. main
+    local data_init = parseinit(call_table) .. init_setup
+    local result = data_init .. "\r\n" .. main
     result = replacecalls(result, call_table, {})
     result = unrollmacros(result, unroll_table)
     --print(result)
@@ -223,6 +230,6 @@ end
 
 -- Utility Functions:
 
-function filereader(str)
-    return file:readString(str, "utf8")
+function importreader(str)
+    return file:readString(Hex_repository .. "\\" .. str, "utf8")
 end
