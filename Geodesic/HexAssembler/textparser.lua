@@ -61,7 +61,7 @@ local execute_init_value = "" ..
     "Hermes' Gambit \r\n"
 
 local init_setup = "\r\n" ..
-    "Flock's Reflection \r\n" ..
+    "Numerical Reflection: %d \r\n" ..
     "Flock's Gambit \r\n" ..
     "Huginn's Gambit \r\n"
 
@@ -220,7 +220,7 @@ function hexassemble(str)
     str = preparse(str)
     local init, main = findsections(str)
     local call_table, unroll_table = inittables(init)
-    local data_init = parseinit(call_table) .. init_setup
+    local data_init = parseinit(call_table) .. string.format(init_setup, #call_table)
     local result = data_init .. "\r\n" .. main
     result = replacecalls(result, call_table, {})
     result = unrollmacros(result, unroll_table)
