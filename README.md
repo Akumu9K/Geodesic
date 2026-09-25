@@ -200,9 +200,9 @@ Currently a highly experimental, very unpolished feature, use with caution.
 
 The hex assembler is a very lightweight "compiler" for hexes that allows you to define functions, macros, imports, etc, in a .hexpattern file, and compile it at runtime.
 
-The calls of the assembler work by initializating the relevant values onto the stack at the start of the hex, and then call them through stack manipulation. This is meant to increase code readibility for the uncompiled code, aswell as allow for denser/larger hexes by being able to call repeated sections of code, rather than write them over and over again.
+The calls of the assembler work by initializating the relevant values onto the stack at the start of the hex, and then put them all into the ravenmind, calling them later using a preset read function. This is meant to increase code readibility for the uncompiled code, aswell as allow for denser/larger hexes by being able to call repeated sections of code, rather than write them over and over again.
 
-The unrolled macros pose a risk of leading to infinite recursion if they refer to each other, or a macro refers to itself in itself, thus, on line 82 in textparser.lua, there is a macro depth limit variable, set to 10 by default.
+The unrolled macros pose a risk of leading to infinite recursion if they refer to each other, or a macro refers to itself in itself, thus, on line 89 in textparser.lua, there is a macro depth limit variable, set to 10 by default.
 
 Examples for the syntax of the hex assembler, aswell as an example hex, is provided in the HexAssembler folder.
 
