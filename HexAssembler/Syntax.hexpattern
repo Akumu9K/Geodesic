@@ -4,7 +4,7 @@
 input example_input;
 
 <Constants>:
-// Constants are initialized onto the stack, and then called.
+// Constants are initialized onto the RM RAM, and then called.
 
 constant example_constant : <iota here>;
 
@@ -14,7 +14,7 @@ constant example_constant : <iota here>;
 embed example_embed : <iota here>;
 
 <Imports>:
-// Imports are initialized onto the stack, and then called.
+// Imports are initialized onto the RM RAM, and then called.
 
 import example_import : <"folder\\folder\\folder\\somefunction.hexpattern">;
 
@@ -32,7 +32,7 @@ macro example_macro : [
 ];
 
 <Functions>:
-// Functions are initialized onto the stack, and then called.
+// Functions are initialized onto the RM RAM, and then called.
 
 // i is number of inputs, o is number of outputs, rm is rm state, global or local.
 // The i and o does not matter for global rm (rm = g), but with local rm (rm = l), 
