@@ -222,8 +222,8 @@ function hexassemble(str)
     local call_table, unroll_table = inittables(init)
     local data_init = parseinit(call_table) .. string.format(init_setup, #call_table)
     local result = data_init .. "\r\n" .. main
-    result = replacecalls(result, call_table, {})
     result = unrollmacros(result, unroll_table)
+    result = replacecalls(result, call_table, {})
     --print(result)
     return result
 end
