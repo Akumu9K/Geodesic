@@ -77,7 +77,7 @@ Thus, it is crucial to configure the hexporter for the importation method being 
 
 Next, we have to configure the endpoint, which relates to perworldendpoints.lua, this script is what allows us to have different importation methods for each server/world. Simply put the name of the endpoint you want to use in the server/worlds "endpoint" field.
 
-(A few notes for moreiotas, you need to enable figuras chatting settings, to allow the importer to send chat messages for you to be able to import with it. Aside from that, this importer assumes you will be using sifters gambit, so on perworldendpoints.lua, line 119, there is a sifters gambit prefix. Change this to whatever sifters gambit prefix you use, or make it an empty string if you do not use sifters)
+(A few notes for moreiotas, you need to enable figuras chatting settings, to allow the importer to send chat messages for you to be able to import with it. Aside from that, this importer assumes you will be using sifters gambit, so on perworldendpoints.lua, line 123, there is a sifters gambit prefix. Change this to whatever sifters gambit prefix you use, or make it an empty string if you do not use sifters)
 
 Finally, configuring the patterns. The template has an example for this, simply fill it out and put it in the patterns field of your server/world. This can be used to replace non per world patterns too, as it has no check for that. Feel free to use it for this purpose if you wish, although I would not recommend.
 
@@ -127,7 +127,7 @@ Of note is a few things. Both of the auxilliaries use 2 functions defined in hex
 
 As these auxilliaries both use the internet, sometimes they receive a bad response, or no response at all. When this happens, the script prints "Traversal Failed" into the chat, which could either mean that the response didnt come fast enough, or that there was an error. After this, you can simply try again.
 
-If this keeps happening, check the figura networking settings, and if they are good, make the pcall() for the requests print its error message. Additionally, in request(), there is a local variable named "limit", on line 24. This should roughly correspond to the miliseconds that the loop should run for, but there is a hard coded delimiter to ensure that it doesnt run forever. Change the limit if needed.
+If this keeps happening, check the figura networking settings, and if they are good, make the pcall() for the requests print its error message. Additionally, in request(), there is a local variable named "limit", on line 24 of hexparty-aux.lua. This should roughly correspond to the miliseconds that the loop should run for, but there is a hard coded delimiter to ensure that it doesnt run forever. Change the limit if needed.
 
 ### Custom Patterns:
 
@@ -242,11 +242,13 @@ Everything else after this, from the custom definitions to per world patterns, i
 
 After this, the patternlistadjust.lua, customdefinitions.lua, and customsyntax.lua runs. The first merely adds some key syntax which is found in .hexpattern formats regular syntax, to pattern_list, while the second adds the custom defined patterns and functions, and finally the third initializes its own table.
 
-After those main steps of initialization, the importer itself is initialized, with hexpattoanglesig.lua, entrypoints.lua and hexporterfigura.lua being called first, hexpattoanglesig.lua is the heart of the importer that is responsible for the raw text to hex pattern conversion, while entrypoints.lua registers the entrypoint handlers, and finally, hexporterfigura.lua handles the importation process
+After those main steps of initialization, the importer itself is initialized, with hexpattoanglesig.lua, entrypoints.lua and hexporterfigura.lua being called first, hexpattoanglesig.lua is the heart of the importer that is responsible for the raw text to hex pattern conversion, while entrypoints.lua registers the entrypoint handlers, and finally, hexporterfigura.lua handles the importation process.
 
 Then perworldendpoints.lua and perworldconfig.lua is called, to finally initialize the server/world specific aspects of the importer; the endpoints, the settings for the importer, and finally, the per world patterns.
 
 Finally, mediatransportparser.lua is called, to initialize the mediatransport receive parsers.
+
+Additionally, inbetween all of these, a few auxilliary files are called relating to the entrypoints and endpoints.
 
 ### The Importation Pipeline:
 
