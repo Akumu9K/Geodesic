@@ -204,10 +204,13 @@ local function parseinit(call_table)
 end
 
 local function preparse(str)
-    str = string.gsub(str, "%/%/.-\r", "\r\n")
-    str = string.gsub(str, "%/%/.-\n", "\r\n")
+    --str = string.gsub(str, "%/%/.-\n", "\r\n")
+    --str = string.gsub(str, "%/%/.-\r", "\r\n")
+    --str = string.gsub(str, "%/%/.-\r\n", "\r\n")
+    --str = string.gsub(str, "%/%/.-\n\r", "\r\n")
+    str = string.gsub(str, "\n", "\r\n")
+    str = string.gsub(str, "\r", "\r\n")
     str = string.gsub(str, "%/%/.-\r\n", "\r\n")
-    str = string.gsub(str, "%/%/.-\n\r", "\r\n")
     return str
 end
 
