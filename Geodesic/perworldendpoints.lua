@@ -4,7 +4,7 @@ Endpoint_Table = {}
 
 function events.entity_init()
 
-local Mediatransport = { -- The default, thus all the relevant functions are defined as themselves
+local Mediatransport = { -- The default
     sender = buffsender,
     partitioner = statpartitioner,
 }
@@ -21,14 +21,20 @@ local Hexparse = { -- To be made, just here as a reminder to make it
 }
 Endpoint_Table["Hexparse"] = Hexparse
 
-end
-
 local Hextweaks = { -- Copy of moreiotas with legalnumgen in it
     sender = textsender,
     partitioner = dynpartitioner,
     illegalnumgen = legalnumgenwrapper,
 }
 Endpoint_Table["Hextweaks"] = Hextweaks
+
+local Hexwoven = { -- Copy of moreiotas with end limiter
+    sender = textsenderHW,
+    partitioner = dynpartitionerHW,
+}
+Endpoint_Table["Hexwoven"] = Hexwoven
+
+end
 
 -- Endpoints:
 
@@ -132,6 +138,65 @@ function textsender(part)
         chatmsg = string.sub(chatmsg, 1, -2) -- To remove trailing space
         length = length - 1 -- To match the above
     end
+    host:sendChatMessage(chatmsg)
+    return length
+end
+
+-- Hexwoven:
+
+-- Needs custom functions due to how I built this importer.. Goddamit.
+
+-- On hexwoven, the behaviour seems to be that, all messages bunch up, but the bigger they are the more they do
+-- And periodically it entirely seizes for about 20-50 ticks
+
+function dynpartitionerHW(list)
+    local partition_table = {}
+    local index = 1
+    for i = 1, max_part, 1 do
+        if index > #list then break end
+        local remaining_bytes = part_size - 2 -- To account for end character
+        partition_table[i] = {}
+        for l = 1, part_size, 1 do
+            if index > #list then break end
+            local bytes = string.len(list[index]["anglesig"]) + 1 + 1
+            if bytes > part_size then
+                print(list[index])
+                error("Pattern size exceeded max partition size at index: " .. index, 100)
+            elseif bytes > remaining_bytes then
+                break
+            else
+                remaining_bytes = remaining_bytes - bytes
+                partition_table[i][l] = list[index]
+                index = index + 1
+            end
+        end
+    end
+    partition_table[#partition_table]["END CHAR"] = true
+    --table.insert(partition_table, 1, {}) --Allows this to function in hexwoven, temp solution for now
+    return partition_table
+end
+
+function textsenderHW(part)
+    local sifters_prefix = "ß€" -- Sifters and signifier
+    local end_char = " @" -- Needs to be two long
+    local chatmsg = sifters_prefix
+    local length = 0
+    for i, v in ipairs(part) do
+        if v["ishexpattern"] ~= true then return end
+        chatmsg = chatmsg .. dir_convert[v["dir"]] .. v["anglesig"] .. " "
+        length = length + string.len(v["anglesig"]) + 2
+    end
+    if #part ~= 0 then
+        chatmsg = string.sub(chatmsg, 1, -2) -- To remove trailing space
+        length = length - 1 -- To match the above
+    end
+    -- Why hexwoven.
+    if part["END CHAR"] == true then
+        chatmsg = chatmsg .. end_char
+    else
+        chatmsg = chatmsg .. "  "
+    end
+
     host:sendChatMessage(chatmsg)
     return length
 end

@@ -1,0 +1,408 @@
+// To be used with: Hexical, Hexcasettes and Moreiotas
+// Compiles using Hex Assembly (Somewhat experimental)
+// Made specifically for Hexwoven and its endpoint, but should work outside of it
+// This hex has a method to cast any spell it imports through the telepathy function of hexical, feel free to ignore or excise it.
+
+<Constants>:
+
+// For the RM RAM
+
+constant clock : <Bookkeepers: ->;
+
+constant importation_status : <Bookkeepers: ->;
+
+constant prev_string : <Bookkeepers: ->;
+
+constant hex : <Bookkeepers: ->;
+
+<Embeds>:
+
+// In ticks
+embed clock_length : <Numerical Reflection: 80>;
+
+embed cassette_label_num : <Numerical Reflection: 6>;
+
+<Macros>:
+
+macro read : [
+    // Input: Read index
+    Muninn's Reflection
+    Jester's Gambit
+    Selection Distillation
+];
+
+macro write : [
+    // Input: Value, Write index
+    Muninn's Reflection
+    Rotation Gambit II
+    Jester's Gambit
+    Surgeon's Exaltation
+    Huginn's Gambit
+];
+
+macro convert : [
+    // Handles the entire string to pattern conversion process
+    // Takes in a string, outputs a pattern list
+
+    Spacing Reflection
+    Separation Distillation
+    {
+        [thoth_stack_cleanup]()
+
+        // Seperate each letter
+        Blank Reflection
+        Separation Distillation
+        [remove_list_ends]()
+
+        // Remove dir, turn into number
+        Speaker's Decomposition
+        Input Purification
+
+        // Duplicate the initial number, leave behind one for dir
+        Gemini Decomposition
+        // Save the other to accumulate
+        Huginn's Gambit
+        // Bring anglesig list back up
+        Jester's Gambit
+        {
+            [thoth_stack_cleanup]()
+
+            // Grab the accumulating number
+            Muninn's Reflection
+            // Push down, pull anglesig letter up
+            Jester's Gambit
+
+            // Set up the letter to number converter
+            {
+                Bookkeeper's Gambit: - // String "wedsaq"
+            }
+            Flock's Disintegration
+            Blank Reflection
+            Separation Distillation
+            [remove_list_ends]()
+            // Push down, pull anglesig letter up
+            Jester's Gambit
+
+            // Convert the anglesig letter into a number
+            Locator's Distillation
+            // Add onto the accumulating number
+            Additive Distillation
+            // Leave one behind to go to thoth accumulator
+            Gemini Decomposition
+
+            // Save the other on the RM
+            Huginn's Gambit
+        }
+        Jester's Gambit
+        Thoth's Gambit
+
+        // Add the dir onto the pattern
+        Jester's Gambit
+        Speaker's Distillation
+
+        // Convert
+        Calligrapher's Purification
+    }
+    Jester's Gambit
+    Thoth's Gambit
+];
+
+macro remove_list_ends : [
+    // Removes the end and beginning of a list
+    Derivation Decomposition
+    Bookkeeper's Gambit: v
+    Speaker's Decomposition
+    Bookkeeper's Gambit: v
+];
+
+macro thoth_stack_cleanup : [
+    // Cleans up a thoth stack, preserving the input
+    Flock's Reflection
+    Flock's Gambit
+    Derivation Decomposition
+    Bookkeeper's Gambit: v-
+];
+
+macro cassette_label : [
+    [cassette_label_num]()
+    Reading Purification (text)
+];
+
+<Functions>:
+
+
+
+<MAIN>:
+
+{
+    // Quine
+    {
+        Bookkeeper's Gambit: - // Quine Placeholder
+    }
+    Flock's Disintegration
+    Numerical Reflection: 1
+    Prospector's Gambit
+    Surgeon's Exaltation
+
+    // RM RAM
+    {
+        Bookkeeper's Gambit: - // RM RAM Placeholder
+    }
+    Flock's Disintegration
+    Huginn's Gambit
+
+    Whisper Reflection
+    Gemini Decomposition
+    // Check if the whisper reflection is either:
+    // A. Null
+    // B. Length 0 or 1 (No Signifier OR No Iotas)
+    // If so, exit early
+
+    // Check if Null
+    Nullary Reflection
+    Equality Distillation
+
+    Jester's Gambit
+
+    // Check if Length 0 or 1
+    Length Purification
+    Numerical Reflection: 1
+    Minimus Distillation II
+
+    Disjunction Distillation
+    {
+        
+    }
+    {
+        Whisper Reflection
+        Gemini Decomposition
+        // Then check if the whisper reflection is either:
+        // A. Not Meant For Importation
+        // B. Same String as before
+
+        // Check if Not Meant For Importation
+        Numerical Reflection: 0
+        Numerical Reflection: 1
+        Selection Exaltation // Winnowing Distillation
+        {
+            Bookkeeper's Gambit: - // String "€" (Index 50)
+        }
+        Flock's Disintegration
+        Equality Distillation
+        Negation Purification
+
+        Jester's Gambit
+
+        // Check if Same String
+        <prev_string>
+        [read]()
+        Equality Distillation
+
+        // If either is true, do not import, nor save into RM RAM
+        // If both are false, import and save
+        Disjunction Distillation
+
+        {
+            
+        }
+        {
+            // Save RM RAM
+            Muninn's Reflection
+            
+            // Grab input
+            Whisper Reflection
+            // Remove signifier and end character
+            Gemini Decomposition
+            Length Purification
+            Numerical Reflection: 2
+            Subtractive Distillation
+            Numerical Reflection: 1
+            Jester's Gambit
+            Selection Exaltation // Winnowing Distillation
+
+            // Run the conversion
+            [convert]()
+            // String "wedsaq" (index 100)
+
+            // Load RM RAM
+            Jester's Gambit
+            Huginn's Gambit
+
+            // Merge converted part into the whole hex
+            // Has to be handled specially to allow for extremely large hexes
+
+            // Empty the hex slot for the RM RAM write copy
+            Muninn's Reflection
+            <hex>
+            Vacant Reflection
+            Surgeon's Exaltation
+
+            // Merge the hex portions
+            Jester's Gambit
+            <hex>
+            [read]()
+            Jester's Gambit
+            Additive Distillation
+            
+            // Write onto the emptied write copy
+            <hex>
+            Jester's Gambit
+            Surgeon's Exaltation
+            
+            // Write onto RM
+            Huginn's Gambit
+
+            // Reset Clock
+            [clock_length]()
+            <clock>
+            [write]()
+
+            // Mark as importing
+            True Reflection
+            <importation_status>
+            [write]()
+            
+        }
+        Augur's Exaltation
+        Hermes' Gambit
+
+        // Check if importing at all, to avoid RM lag
+        <importation_status>
+        [read]()
+        {
+            // Check if either:
+            // A. Clock Ran Out
+            // B. End Character
+
+            // Check Clock
+            <clock>
+            [read]()
+            Numerical Reflection: 0
+            Equality Distillation
+
+            // Check End Character
+            Whisper Reflection
+            Gemini Decomposition
+            Length Purification
+            Gemini Decomposition
+            Numerical Reflection: 1
+            Subtractive Distillation
+            Jester's Gambit
+            Selection Exaltation // Winnowing Distillation
+            {
+                Bookkeeper's Gambit: - // String "@" (Index 177)
+            }
+            Flock's Disintegration
+            Equality Distillation
+
+            // If either is true, reset importation
+            // If both are false, decrement clock
+            Disjunction Distillation
+            {
+                // Save Hex
+                <hex>
+                [read]()
+                {
+                    Bookkeeper's Gambit: - // Property Iota (Index 188)
+                }
+                Flock's Disintegration
+                Jester's Gambit
+                Schrödinger's Gambit
+
+                // Print Hex Length
+                <hex>
+                [read]()
+                Length Purification
+                Reveal
+                Bookkeeper's Gambit: v
+
+                // Reset Hex
+                Vacant Reflection
+                <hex>
+                [write]()
+
+                // Mark as not importing
+                False Reflection
+                <importation_status>
+                [write]()
+                
+            }
+            {
+                // Decrement clock
+                <clock>
+                [read]()
+                Numerical Reflection: 1
+                Subtractive Distillation
+                <clock>
+                [write]()
+            }
+            Augur's Exaltation
+            Hermes' Gambit
+        }
+        {
+            
+        }
+        Augur's Exaltation
+        Hermes' Gambit
+    }
+    Augur's Exaltation
+    Hermes' Gambit
+
+    // Update string
+    Whisper Reflection
+    <prev_string>
+    [write]()
+
+    // Readd the RM RAM
+    Muninn's Reflection
+    Numerical Reflection: 8
+    Jester's Gambit
+    Surgeon's Exaltation
+
+    // Enqueue
+    Numerical Reflection: 1
+    [cassette_label]()
+
+    Enqueue
+
+    // Cast if telepathy was held
+    Telepathic Reflection
+    Numerical Reflection: 1
+    Equality Distillation
+    {
+        {
+            Bookkeeper's Gambit: - // Property Iota (Index 259)
+        }
+        Flock's Disintegration
+        Observation Purification
+        Hermes' Gambit
+    }
+    {
+        
+    }
+    Augur's Exaltation
+    Hermes' Gambit
+}
+// Initialize Quine
+Numerical Reflection: 1
+Prospector's Gambit
+Surgeon's Exaltation
+
+// Initialize RM RAM
+Numerical Reflection: 0
+False Reflection
+Whisper Reflection
+Vacant Reflection
+
+Numerical Reflection: 4
+Flock's Gambit
+
+Numerical Reflection: 8
+Jester's Gambit
+Surgeon's Exaltation
+
+// Enqueue
+Numerical Reflection: 1
+[cassette_label]()
+
+Enqueue
