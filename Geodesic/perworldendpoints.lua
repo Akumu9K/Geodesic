@@ -115,7 +115,7 @@ function dynpartitioner(list)
             end
         end
     end
-    table.insert(partition_table, 1, {})
+    --table.insert(partition_table, 1, {})
     return partition_table
 end
 
